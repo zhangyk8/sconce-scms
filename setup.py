@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="sconce-scms",
-    version="0.0.1",
+    version="0.0.4",
     author="Yikun Zhang",
     author_email="yikunzhang@foxmail.com",
     description="Spherical and Conic Cosmic Web Finders with Extended SCMS Algorithms",
