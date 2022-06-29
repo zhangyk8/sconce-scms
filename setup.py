@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="sconce-scms",
-    version="0.0.4",
+    version="0.0.10",
     author="Yikun Zhang",
     author_email="yikunzhang@foxmail.com",
     description="Spherical and Conic Cosmic Web Finders with Extended SCMS Algorithms",
@@ -19,7 +19,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    packages=setuptools.find_packages(include=["pyscms"]),
+    packages=setuptools.find_packages(include=["sconce"]),
     install_requires=["numpy", "scipy", "pyyaml", "wheel", "ray[default]"],
     python_requires=">=3.6",
 )
