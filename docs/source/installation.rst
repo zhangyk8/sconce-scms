@@ -13,11 +13,11 @@ Dependencies
 Quick Start
 ------------
 
-To use a stable release of **SCONCE-SCMS**, install it using pip:
+To use a stable release of **SCONCE-SCMS**, install it using pip::
 
     pip install sconce-scms
 
-The Pypi version is updated regularly. For the latest update, however, one should clone from GitHub and install it directly.
+The Pypi version is updated regularly. For the latest update, however, one should clone from GitHub and install it directly::
 
     git clone https://github.com/zhangyk8/sconce-scms.git
     cd sconce-scms
