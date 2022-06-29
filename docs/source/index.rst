@@ -18,7 +18,7 @@ Methodology
    :caption: Contents:
    
    installation
-   api
+   api_reference
    
    
 References
