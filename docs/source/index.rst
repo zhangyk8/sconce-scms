@@ -8,19 +8,6 @@ Methodology
 
 
 
-Installation
-------------
-
-To use a stable release of **SCONCE-SCMS**, install it using pip:
-
-.. code-block:: console
-
-   (.venv) $ pip install sconce-scms
-
-.. Check out the :doc:`usage` section for further information, including how to :ref:`installation` the project.
-
-
-
 .. note::
 
    This project is under active development.
@@ -30,8 +17,8 @@ Contents
 
 .. toctree::
 
+   installation
    usage
-   api
    
    
 References
