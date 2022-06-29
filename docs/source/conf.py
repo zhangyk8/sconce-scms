@@ -2,12 +2,12 @@
 
 # -- Project information
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'SCONCE-SCMS'
+copyright = '2022, Yikun Zhang'
+author = 'Yikun Zhang'
 
 release = '0.1'
-version = '0.1.0'
+version = '0.0.10'
 
 # -- General configuration
 
