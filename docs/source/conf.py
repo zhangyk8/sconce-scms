@@ -31,8 +31,8 @@ extensions = [
     'sphinx.ext.autodoc',
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
-    "sphinx_gallery.gen_gallery",
     'sphinx.ext.intersphinx',
+    "nbsphinx",
 ]
 
 # intersphinx_mapping = {
