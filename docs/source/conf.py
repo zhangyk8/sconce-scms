@@ -43,6 +43,7 @@ extensions = [
 # }
 # intersphinx_disabled_domains = ['std']
 
+autodoc_mock_imports = ['numpy', 'scipy', 'ray']
 templates_path = ['_templates']
 
 # List of patterns, relative to source directory, that match files and
