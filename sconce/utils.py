@@ -1,3 +1,5 @@
+# Author: Yikun Zhang
+# Description: This script contains the utility functions for using our package in practice.
 import numpy as np
 
 
