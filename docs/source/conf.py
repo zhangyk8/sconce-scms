@@ -32,7 +32,9 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     'sphinx.ext.intersphinx',
-    "nbsphinx",
+    'sphinx.ext.duration',
+    'sphinx.ext.doctest',
+    'sphinx.ext.autosummary',
 ]
 
 # intersphinx_mapping = {
