@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -20,6 +18,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     packages=setuptools.find_packages(include=["sconce"]),
-    install_requires=["numpy", "scipy", "pyyaml", "wheel", "ray[default]"],
+    install_requires=["numpy", "scipy", "ray[default]"],
     python_requires=">=3.6",
 )
