@@ -4,8 +4,7 @@ import numpy as np
 
 
 def cart2sph(x, y, z):
-    '''
-    Converting the Euclidean coordinate of a data point in R^3 to its Spherical 
+    '''Converting the Euclidean coordinate of a data point in R^3 to its Spherical 
     coordinates.
     
     Parameters
@@ -30,8 +29,7 @@ def cart2sph(x, y, z):
     return theta, phi, r
 
 def sph2cart(theta, phi, r=1):
-    '''
-    Converting the Spherical coordinate of a data point to its Euclidean 
+    '''Converting the Spherical coordinate of a data point to its Euclidean 
     coordinate in R^3.
     
     Parameters
@@ -57,8 +55,7 @@ def sph2cart(theta, phi, r=1):
 
 def CirSphSampling(N, lat_c=60, lon_range=[-180,180], sigma=0.01, 
                    pv_ax=np.array([0,0,1])):
-    '''
-    Generating data points from a circle on the unit sphere with additive 
+    '''Generating data points from a circle on the unit sphere with additive 
     Gaussian noises to their Cartesian coordinates plus L2 normalizations.
     
     Parameters
@@ -84,7 +81,6 @@ def CirSphSampling(N, lat_c=60, lon_range=[-180,180], sigma=0.01,
     ----------
         pts_c_noise: (N,3)-array
             The Cartesian coordinates of N simulated data points.
-    
     '''
     ## Random longitudes with range (0, 180)
     lon_c = np.random.rand(N,)*(lon_range[1]-lon_range[0]) + lon_range[0]
