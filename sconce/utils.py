@@ -6,12 +6,12 @@ def cart2sph(x, y, z):
     Converting the Euclidean coordinate of a data point in R^3 to its Spherical 
     coordinates.
     
-    Parameters:
+    Parameters
     ----------
         x, y, z: floats 
             Euclidean coordinate in R^3 of a data point.
     
-    Returns:
+    Returns
     ----------
         theta: float
             Longitude (ranging from -180 degree to 180 degree).
@@ -32,7 +32,7 @@ def sph2cart(theta, phi, r=1):
     Converting the Spherical coordinate of a data point to its Euclidean 
     coordinate in R^3.
     
-    Parameters:
+    Parameters
     ----------
         theta: float
             Longitude (ranging from -180 degree to 180 degree).
@@ -41,7 +41,7 @@ def sph2cart(theta, phi, r=1):
         r: float 
             Radial distance from the origin to the data point.
             
-    Returns:
+    Returns
     ----------
         x, y, z: floats 
             Euclidean coordinate in R^3 of a data point.
@@ -59,7 +59,7 @@ def CirSphSampling(N, lat_c=60, lon_range=[-180,180], sigma=0.01,
     Generating data points from a circle on the unit sphere with additive 
     Gaussian noises to their Cartesian coordinates plus L2 normalizations.
     
-    Parameters:
+    Parameters
     ----------
         N: int
             The number of randomly generated data points.
@@ -78,7 +78,7 @@ def CirSphSampling(N, lat_c=60, lon_range=[-180,180], sigma=0.01,
             The pivotal axis of the circle on the sphere from which the data 
             points are generated (plus noises).
             
-    Return:
+    Return
     ----------
         pts_c_noise: (N,3)-array
             The Cartesian coordinates of N simulated data points.
