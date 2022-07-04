@@ -1,7 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 # Author: Yikun Zhang
-# Description: This script contains the utility functions for using our package in practice.
+# Last Editing: June 26, 2022
+# Description: This script contains the utility functions for using our package 
+# in practice.
+
 import numpy as np
 
+#==========================================================================================#
 
 def cart2sph(x, y, z):
     '''Converting the Euclidean coordinate of a data point in R^3 to its Spherical 
