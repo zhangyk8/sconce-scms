@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-@author: Yikun Zhang
-Last Editing: June 19, 2021
 
-Description: This script contains code for the directional kernel density 
-estimator with the von Mises kernel, its gradient estimator, directional mean 
-shift (DMS), and directional subspace constrained mean shift (DirSCMS) algorithms.
-"""
+# Author: Yikun Zhang
+# Last Editing: June 26, 2022
+
+# Description: This script contains code for the directional kernel density 
+# estimator with the von Mises kernel, its gradient estimator, directional mean 
+# shift (DMS), and directional subspace constrained mean shift (DirSCMS) algorithms.
 
 import numpy as np
 from numpy import linalg as LA
 import scipy.special as sp
 
-#==========================================================================================#
+#=================================================================================#
 
 def DirKDE(x, data, h=None, wt=None):
     '''
     The q-dim directional KDE with the von Mises kernel.
     
     Parameters:
+    ----------
         x: (m,d)-array
             The Eulidean coordinates of m query points on a unit hypersphere, 
             where d=q+1 is the Euclidean dimension of data
@@ -39,6 +39,7 @@ def DirKDE(x, data, h=None, wt=None):
             weight "1/n".)
     
     Return:
+    ----------
         f_hat: (m,)-array
             The corresponding directinal kernel density estimates at m query points.
     '''
@@ -76,6 +77,7 @@ def DirKDEGradLog(x, data, h=None, wt=None):
     the von Mises kernel.
     
     Parameters:
+    ----------
         x: (m,d)-array
             The Eulidean coordinates of m query points on a unit hypersphere, 
             where d=q+1 is the Euclidean dimension of data
@@ -95,6 +97,7 @@ def DirKDEGradLog(x, data, h=None, wt=None):
             weight "1/n".)
     
     Return:
+    ----------
         Riem_grad_hat: (m,d)-array
             The corresponding gradients of the log directional KDEs at m query points.
     '''
@@ -134,9 +137,10 @@ def DirKDEGradLog(x, data, h=None, wt=None):
 
 def DirMS(y_0, data, h=None, eps=1e-7, max_iter=1000, wt=None, diff_method='all'):
     '''
-    Directional mean shift algorithm with the von-Mises Kernel
+    Directional mean shift algorithm with the von-Mises Kernel.
     
     Parameters:
+    ----------
         y_0: (N,d)-array
             The Euclidean coordinates of N directional initial points in 
             d-dimensional Euclidean space.
@@ -173,6 +177,7 @@ def DirMS(y_0, data, h=None, eps=1e-7, max_iter=1000, wt=None, diff_method='all'
             and stop the algorithm. Default: diff_method='all'.)
     
     Return:
+    ----------
         MS_path: (N,d,T)-array
             The whole iterative trajectory of every initial point yielded by 
             the DMS algorithm.
@@ -227,6 +232,7 @@ def DirSCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
     von-Mises kernel.
     
     Parameters:
+    ----------
         mesh_0: a (m,D)-array
             The Euclidean coordinates of m directional initial points in the 
             D-dimensional Euclidean space.
@@ -265,6 +271,7 @@ def DirSCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             (Default: stop_cri='proj_grad'.)
     
     Return:
+    ----------
         SCMS_path: (m,D,T)-array
             The entire iterative DirSCMS sequence for each initial point.
     '''
@@ -347,6 +354,7 @@ def DirSCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
     kernel. 
     
     Parameters:
+    ----------
         mesh_0: a (m,D)-array
             The Euclidean coordinates of m directional initial points in the 
             D-dimensional Euclidean space.
@@ -385,6 +393,7 @@ def DirSCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             (Default: stop_cri='proj_grad'.)
     
     Return:
+    ----------
         SCMS_path: (m,D,T)-array
             The entire iterative DirSCMS sequence for each initial point.
     '''
