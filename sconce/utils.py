@@ -1,13 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-@author: Yikun Zhang
-Last Editing: June 22, 2022
-
-Description: This script contains the utility functions for using our package 
-in practice.
-"""
-
 import numpy as np
 
 
