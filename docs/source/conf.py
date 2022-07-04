@@ -52,5 +52,10 @@ exclude_patterns = ['_build', '**.ipynb_checkpoints']
 html_theme = 'sphinx_rtd_theme'
 master_doc = 'index'
 
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
+html_static_path = ['_static']
+
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
