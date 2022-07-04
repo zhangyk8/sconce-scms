@@ -27,10 +27,11 @@ version = '0.0.10'
 # -- General configuration
 
 extensions = [
-    'sphinx.ext.duration',
-    'sphinx.ext.doctest',
+    "sphinx.ext.napoleon",
     'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
+    "sphinx.ext.mathjax",
+    "sphinx.ext.viewcode",
+    "sphinx_gallery.gen_gallery",
     'sphinx.ext.intersphinx',
 ]
 
