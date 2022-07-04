@@ -21,7 +21,7 @@ project = 'SCONCE-SCMS'
 copyright = '2022, Yikun Zhang'
 author = 'Yikun Zhang'
 
-release = '0.1'
+release = '0.0.10'
 version = '0.0.10'
 
 # -- General configuration
@@ -59,6 +59,3 @@ master_doc = 'index'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
-# -- Options for EPUB output
-epub_show_urls = 'footnote'
