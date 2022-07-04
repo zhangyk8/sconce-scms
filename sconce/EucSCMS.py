@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-@author: Yikun Zhang
-Last Editing: June 19, 2022
 
-Description: This script contains code for the standard (or Euclidean) 
-kernel density estimator with the Gaussian kernel, its gradient estimator, 
-mean shift (MS), and subspace constrained mean shift (SCMS) algorithms.
-"""
+# Author: Yikun Zhang
+# Last Editing: June 26, 2022
+
+# Description: This script contains code for the standard (or Euclidean) 
+# kernel density estimator with the Gaussian kernel, its gradient estimator, 
+# mean shift (MS), and subspace constrained mean shift (SCMS) algorithms.
 
 import numpy as np
 from numpy import linalg as LA
 
-#==========================================================================================#
+#==============================================================================#
 
 def KDE(x, data, h=None, wt=None):
     '''
     The d-dim Euclidean KDE with the Gaussian kernel.
     
     Parameters:
+    ----------
         x: (m,d)-array
             The coordinates of m query points in the d-dim Euclidean space.
     
@@ -36,6 +36,7 @@ def KDE(x, data, h=None, wt=None):
             weight "1/n".)
     
     Return:
+    ----------
         f_hat: (m,)-array
             The corresponding kernel density estimates at m query points.
     '''
@@ -62,6 +63,7 @@ def KDEGradLog(x, data, h=None, wt=None):
     The gradient of the logarithm of the d-dim Euclidean KDE with Gaussian kernel.
     
     Parameters:
+    ----------
         x: (m,d)-array
             The coordinates of m query points in the d-dim Euclidean space.
     
@@ -79,6 +81,7 @@ def KDEGradLog(x, data, h=None, wt=None):
             weight "1/n".)
     
     Return:
+    ----------
         grad_log_hat: (m,d)-array
             The corresponding gradients of the log-KDEs at m query points.
     '''
@@ -108,9 +111,10 @@ def KDEGradLog(x, data, h=None, wt=None):
 
 def MS(mesh_0, data, h=None, eps=1e-7, max_iter=1000, wt=None):
     '''
-    Mean Shift Algorithm with the Gaussian kernel
+    Mean Shift Algorithm with the Gaussian kernel.
     
     Parameters:
+    ----------
         mesh_0: a (m,d)-array
             The coordinates of m initial points in the d-dim Euclidean space.
     
@@ -134,6 +138,7 @@ def MS(mesh_0, data, h=None, eps=1e-7, max_iter=1000, wt=None):
             weight "1/n".)
     
     Return:
+    ----------
         MS_path: (m,d,T)-array
             The entire iterative MS sequence for each initial point.
     '''
@@ -180,9 +185,10 @@ def MS(mesh_0, data, h=None, eps=1e-7, max_iter=1000, wt=None):
 def SCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
                  stop_cri='proj_grad'):
     '''
-    Subspace Constrained Mean Shift algorithm with log density and Gaussian kernel
+    Subspace Constrained Mean Shift algorithm with log density and Gaussian kernel.
     
     Parameters:
+    ----------
         mesh_0: a (m,D)-array
             The coordinates of m initial points in the D-dim Euclidean space.
     
@@ -218,6 +224,7 @@ def SCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             (Default: stop_cri='proj_grad'.)
     
     Return:
+    ----------
         SCMS_path: (m,D,T)-array
             The entire iterative SCMS sequence for each initial point.
     '''
@@ -287,9 +294,10 @@ def SCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
 
 def SCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None, stop_cri='proj_grad'):
     '''
-    Subspace Constrained Mean Shift Algorithm with Gaussian kernel
+    Subspace Constrained Mean Shift Algorithm with Gaussian kernel.
     
     Parameters:
+    ----------
         mesh_0: a (m,D)-array
             The coordinates of m initial points in the D-dim Euclidean space.
     
@@ -325,6 +333,7 @@ def SCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None, stop_cri='
             (Default: stop_cri='proj_grad'.)
             
     Return:
+    ----------
         SCMS_path: (m,D,T)-array
             The entire iterative SCMS sequence for each initial point.
     '''
