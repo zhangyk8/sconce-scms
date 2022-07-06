@@ -14,17 +14,12 @@ import scipy.special as sp
 
 #==========================================================================================#
 
-import numpy as np
-from numpy import linalg as LA
-import scipy.special as sp
-
-#==========================================================================================#
-
 def DirLinKDE(x, data, h=None, b=None, q=2, D=1):
     '''
     Directional-linear KDE with the von Mises and Gaussian kernels
     
     Parameters:
+    ----------
         x: (m, q+1+D)-array
             Eulidean coordinates of m directional-linear query points, where 
             (q+1) is the Euclidean dimension of the directional component (first 
@@ -54,6 +49,7 @@ def DirLinKDE(x, data, h=None, b=None, q=2, D=1):
             Data dimension of linear components.
     
     Return:
+    ----------
         f_hat: (m,)-array
             The corresponding directinal-linear density estimates at m query points.
     '''
@@ -113,6 +109,7 @@ def DirLinMS(mesh_0, data, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000):
     (Simultaneous version)
     
     Parameters:
+    ----------
         mesh_0: (m, q+1+D)-array
             Eulidean coordinates of m directional-linear query points, where 
             (q+1) is the Euclidean dimension of the directional component (first 
@@ -149,6 +146,7 @@ def DirLinMS(mesh_0, data, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000):
             initial point. (Default: max_iter=1000.)
     
     Return:
+    ----------
         MS_path: (m,q+1+D,T)-array
             The entire iterative MS sequence for each initial point.
     '''
@@ -227,6 +225,7 @@ def DirLinMS_CA(mesh_0, data, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000)
     (Componentwise Ascending version)
     
     Parameters:
+    ----------
         mesh_0: (m, q+1+D)-array
             Eulidean coordinates of m directional-linear query points, where 
             (q+1) is the Euclidean dimension of the directional component (first 
@@ -263,6 +262,7 @@ def DirLinMS_CA(mesh_0, data, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000)
             initial point. (Default: max_iter=1000.)
     
     Return:
+    ----------
         MS_path: (m,q+1+D,T)-array
             The entire iterative MS sequence for each initial point.
     '''
@@ -343,6 +343,7 @@ def DirLinSCMS(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1
     ridges under the correct (Riemannian) gradient of DirLin KDE).
     
     Parameters:
+    ----------
         mesh_0: (m, q+1+D)-array
             Eulidean coordinates of m directional-linear query points, where 
             (q+1) is the Euclidean dimension of the directional component (first 
@@ -381,7 +382,8 @@ def DirLinSCMS(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1
             The maximum number of iterations for the MS algorithm on each 
             initial point. (Default: max_iter=1000.)
             
-    Return:
+    Returns:
+    ----------
         SCMS_path: (m,q+1+D,T)-array
             The entire iterative DirLinSCMS sequence for each initial point.
             
@@ -520,6 +522,7 @@ def DirLinSCMSLog(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_ite
     DirLin KDE).
     
     Parameters:
+    ----------
         mesh_0: (m, q+1+D)-array
             Eulidean coordinates of m directional-linear query points, where 
             (q+1) is the Euclidean dimension of the directional component (first 
@@ -559,6 +562,7 @@ def DirLinSCMSLog(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_ite
             initial point. (Default: max_iter=1000.)
             
     Return:
+    ----------
         SCMS_path: (m,q+1+D,T)-array
             The entire iterative DirLinSCMS sequence for each initial point.
             
