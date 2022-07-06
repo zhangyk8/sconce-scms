@@ -1,15 +1,18 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-@author: Yikun Zhang
 
-Last Editing: June 19, 2021
+# Author: Yikun Zhang
+# Last Editing: June 26, 2022
 
-Description: This script contains code for the directional-linear kernel density 
-estimator with the von Mises and Gaussian kernels, directional-linear mean shift 
-(DirLinMS), and directional-linear subspace constrained mean shift (DirLinSCMS) 
-algorithms.
-"""
+# Description: This script contains code for the directional-linear kernel density 
+# estimator with the von Mises and Gaussian kernels, directional-linear mean shift 
+# (DirLinMS), and directional-linear subspace constrained mean shift (DirLinSCMS) 
+# algorithms.
+
+import numpy as np
+from numpy import linalg as LA
+import scipy.special as sp
+
+#==========================================================================================#
 
 import numpy as np
 from numpy import linalg as LA
