@@ -6,15 +6,16 @@
 # SCONCE-SCMS
 ## Spherical and Conic Cosmic Web Finders with Extended SCMS Algorithms
 
+The subspace consrained mean shift (SCMS) algorithm 
 
 * Free software: MIT license
 * Documentation: https://sconce-scms.readthedocs.io.
 
 
-Installation
+Installation guide
 --------
 
-To install the latest version of ```sconce-scms``` from this repository, run:
+```sconce-scms``` requires Python 3.6+ (earlier version might be applicable), [NumPy](http://www.numpy.org/), [SciPy](https://www.scipy.org/), and [Ray](https://ray.io/) (optional and only used for parallel computing). To install the latest version of ```sconce-scms``` from this repository, run:
 
 ```
 python setup.py install
