@@ -6,7 +6,7 @@
 # SCONCE-SCMS
 ## Spherical and Conic Cosmic Web Finders with Extended SCMS Algorithms
 
-The subspace consrained mean shift (SCMS) algorithm [[1]](#sconce)
+The subspace consrained mean shift (SCMS) algorithm [[2]](#scms)
 
 * Free software: MIT license
 * Documentation: https://sconce-scms.readthedocs.io.
@@ -34,7 +34,7 @@ References
 
 <a name="sconce">[1]</a> Y. Zhang, R. S. de Souza, and Y.-C. Chen (2022+). SCONCE: A Filament Finder for Spherical and Conic Cosmic Web Geometries.
 
-[2] U. Ozertem and D. Erdogmus (2011). Locally Defined Principal Curves and Surfaces. *Journal of Machine Learning Research*, **12**, 1249-1286.
+<a name="scms">[2]</a> U. Ozertem and D. Erdogmus (2011). Locally Defined Principal Curves and Surfaces. *Journal of Machine Learning Research*, **12**, 1249-1286.
 
 [3] Y.-C. Chen, S. Ho, P. E. Freeman, C. R. Genovese, and L. Wasserman (2015). Cosmic web reconstruction through density ridges: method and algorithm. *Monthly Notices of the Royal Astronomical Society*, **454**(1), 1140-1156.
 
