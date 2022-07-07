@@ -34,7 +34,7 @@ def KDE(x, data, h=None, wt=None):
             points. (Default: wt=None, that is, each data point has an equal
             weight "1/n".)
     
-    Return:
+    Returns:
     ----------
         f_hat: (m,)-array
             The corresponding kernel density estimates at m query points.
