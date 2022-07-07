@@ -1,7 +1,8 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 '''
 @author: Yikun Zhang
 '''
-# -*- coding: utf-8 -*-
 
 # Author: Yikun Zhang
 # Last Editing: June 26, 2022
