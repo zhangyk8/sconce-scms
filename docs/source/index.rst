@@ -31,8 +31,8 @@ Citation
 
 If you use ``sconce-scms`` in your research, please cite the following papers:
 
-* Y. Zhang, R. S. de Souza, and Y.-C. Chen (2022+). SCONCE: A Cosmic Web Finder for Spherical and Conic Geometries.
-* Y.-C. Chen, S. Ho, P. E. Freeman, C. R. Genovese, and L. Wasserman (2015). Cosmic web reconstruction through density ridges: method and algorithm. *Monthly Notices of the Royal Astronomical Society*, **454**(1), 1140-1156.
+* "Y. Zhang, R. S. de Souza, and Y.-C. Chen (2022+). SCONCE: A Cosmic Web Finder for Spherical and Conic Geometries."
+* "Y.-C. Chen, S. Ho, P. E. Freeman, C. R. Genovese, and L. Wasserman (2015). Cosmic web reconstruction through density ridges: method and algorithm. *Monthly Notices of the Royal Astronomical Society*, **454**(1), 1140-1156."
 
    
 References
