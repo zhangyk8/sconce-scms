@@ -20,7 +20,7 @@ Sperical and Conic Cosmic Web Finder in Python
    
 References
 ----------
-.. [1] Y. Zhang, R. S. de Souza, and Y.-C. Chen (2022+). SCONCE: A Filament Finder for Spherical and Conic Cosmic Web Geometries.
+.. [1] Y. Zhang, R. S. de Souza, and Y.-C. Chen (2022+). SCONCE: A Cosmic Web Finder for Spherical and Conic Geometries.
 .. [2] U. Ozertem and D. Erdogmus (2011). Locally Defined Principal Curves and Surfaces. *Journal of Machine Learning Research*, **12**, 1249-1286.
 .. [3] C. R. Genovese, M. Perone-Pacifico, I. Verdinelli, and L. Wasserman (2014). Nonparametric ridge estimation. The Annals of Statistics, **42**(4), 1511-1545.
 .. [4] Y.-C. Chen, S. Ho, P. E. Freeman, C. R. Genovese, and L. Wasserman (2015). Cosmic web reconstruction through density ridges: method and algorithm. *Monthly Notices of the Royal Astronomical Society*, **454**(1), 1140-1156.
