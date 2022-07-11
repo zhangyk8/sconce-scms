@@ -7,10 +7,12 @@ Standard SCMS Algorithm on the Euclidean Space :math:`\mathbb{R}^D`
 ------------
 
 The subspace constrained mean shift (SCMS) algorithm [2]_ is a gradient ascent typed method that dealing with the estimation of local principal curves, more widely known as density ridges in statistics [3]_. Given a (smooth) density function :math:`p` in :math:`\mathbb{R}^D`, its d-dimensional density ridge is defined as
-.. math:: 
+
+.. math::
+
     R(p) = \left\{\mathbf{x} \in \mathbb{R}^D: V_E(\mathbf{x})^T \nabla p(\mathbf{x})=\mathbf{0} \right\},
     
-where :math:`\nabla p(\mathbf{x})` is the gradient of :math:`p` and :math:`V_E(\mathbf{x})=\left[\mathbf{v}_{D-d}(\mathbf{x}),..., \mathbf{v}_D(\mathbf{x})\right] \in \mathbb{R}^{D\times (D-d)}` consists of the last :math:`(D-d)` eigenvectors of the Hessian :math:`\nabla\nabla p(\mathbf{x})`
+where :math:`\nabla p(\mathbf{x})` is the gradient of :math:`p` and :math:`V_E(\mathbf{x})=\left[\mathbf{v}_{D-d}(\mathbf{x}),..., \mathbf{v}_D(\mathbf{x})\right] \in \mathbb{R}^{D\times (D-d)}` consists of the last :math:`(D-d)` eigenvectors of the Hessian :math:`\nabla\nabla p(\mathbf{x})` associated with a descending order of eigenvalues :math:`\lambda_{D-d)(\mathbf{x}) \geq \cdots \geq \lambda_D(\mathbf{x})`.
 
 
 .. note::
