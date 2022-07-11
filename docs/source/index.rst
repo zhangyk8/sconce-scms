@@ -1,7 +1,7 @@
 Welcome to SCONCE-SCMS's documentation!
 ===================================
 
-**SCONCE-SCMS** (**S**\pherical and **CON**\ic **C**\osmic w\ **E**\b finder with the extended **SCMS** algorithms) is a Python library for detecting the cosmic filaments as well as the associated cosmic nodes from a collection of discrete observations on the 2D celestial sphere :math:`\mathbb{S}^2` or 3D (RA,DEC,redshift) light cone :math:`\mathbb{S}^2\times\mathbb{R}`.
+**SCONCE-SCMS** (**S**\pherical and **CON**\ic **C**\osmic w\ **E**\b finder with the extended **SCMS** algorithms) is a Python library for detecting the cosmic web structures (primarily cosmic filaments and the associated cosmic nodes) from a collection of discrete observations on the 2D (RA,DEC) celestial sphere :math:`\mathbb{S}^2` or 3D (RA,DEC,redshift) light cone :math:`\mathbb{S}^2\times\mathbb{R}`.
 
 Methodology
 ------------
