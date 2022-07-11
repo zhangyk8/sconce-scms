@@ -4,7 +4,7 @@ Methodology
 Standard SCMS Algorithm on the Euclidean Space :math:`\mathbb{R}^D`
 ------------
 
-The subspace constrained mean shift (SCMS) algorithm [2]_ is a gradient ascent typed method that dealing with the estimation of local principal curves, more widely known as density ridges in statistics ([3]_, [4]_). Given a (smooth) density function :math:`p` supported on :math:`\mathbb{R}^D`, its d-dimensional density ridge is defined as
+The subspace constrained mean shift (SCMS) algorithm [2]_ is designed to estimate the density ridges, the lower dimensional structures at which the density peak. Given a (smooth) density function :math:`p` supported on :math:`\mathbb{R}^D`, its d-dimensional density ridge is defined as
 
 .. math::
 
