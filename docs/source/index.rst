@@ -15,6 +15,7 @@ Sperical and Conic Cosmic Web Finder in Python
    :caption: Contents:
    
    installation
+   methods
    api_reference
    
    
