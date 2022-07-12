@@ -4,9 +4,12 @@
 [![Documentation Status](https://readthedocs.org/projects/sconce-scms/badge/?version=latest)](http://sconce-scms.readthedocs.io/?badge=latest)
 
 # SCONCE-SCMS
-## Spherical and Conic Cosmic Web Finders with Extended SCMS Algorithms
+## Spherical and Conic Cosmic Web Finders with the Extended SCMS Algorithms
 
-The subspace consrained mean shift (SCMS) algorithm [[2]](#scms)
+
+**SCONCE-SCMS** (**S**\pherical and **CON**\ic **C**\osmic w\ **E**\b finder with the extended **SCMS** algorithms [[1]](#sconce) is a Python library for detecting the cosmic web structures (primarily cosmic filaments and the associated cosmic nodes) from a collection of discrete observations with the extended subspace constrained mean shift (SCMS) algorithms ([[2]](#scms), [[5]](#dirscms), [[6]](#dirlinscms)) on the unit (hyper)sphere (__in most cases, the 2D (RA,DEC) celestial sphere__), and the directional-linear product space (__most commonly, the 3D (RA,DEC,redshift) light cone__). 
+
+(Notes: RA -- Right Ascension, i.e., the celestial longitude; DEC -- Declination, i.e., the celestial latitude.)
 
 * Free software: MIT license
 * Documentation: https://sconce-scms.readthedocs.io.
@@ -26,9 +29,6 @@ To pip install a stable release, run:
 pip install sconce-scms
 ```
 
-Quick Start
---------
-
 References
 --------
 
@@ -40,6 +40,6 @@ References
 
 [4] Y. Zhang and Y.-C. Chen (2021). Kernel Smoothing, Mean Shift, and Their Learning Theory with Directional Data. *Journal of Machine Learning Research*, **22**(154), 1-92.
 
-[5] Y. Zhang and Y.-C. Chen (2022). Linear convergence of the subspace constrained mean shift algorithm: from Euclidean to directional data. *Information and Inference: A Journal of the IMA*, iaac005, [https://doi.org/10.1093/imaiai/iaac005](https://doi.org/10.1093/imaiai/iaac005).
+<a name="dirscms">[5]</a> Y. Zhang and Y.-C. Chen (2022). Linear convergence of the subspace constrained mean shift algorithm: from Euclidean to directional data. *Information and Inference: A Journal of the IMA*, iaac005, [https://doi.org/10.1093/imaiai/iaac005](https://doi.org/10.1093/imaiai/iaac005).
 
-[6] Y. Zhang and Y.-C. Chen (2021). Mode and ridge estimation in euclidean and directional product spaces: A mean shift approach. *arXiv preprint arXiv:2110.08505*.
+<a name="dirlinscms">[6]</a> Y. Zhang and Y.-C. Chen (2021). Mode and ridge estimation in euclidean and directional product spaces: A mean shift approach. *arXiv preprint arXiv:2110.08505*.
