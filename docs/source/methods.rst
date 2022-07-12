@@ -59,6 +59,10 @@ where :math:`L(\cdot)` is the directional kernel (e.g., the von Mises kernel :ma
 .. math::
 
     \mathbf{x}^{(t+1)} \gets \mathbf{x}^{(t)} - \widehat{V}_D(\mathbf{x}^{(t)}) \widehat{V}_D(\mathbf{x}^{(t)})^T \left[\frac{\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right)}{\left\|\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right) \right\|} \right]
+    
+.. math::
+
+    \text{ and } \quad \mathbf{x}^{(t+1)} \gets \frac{\mathbf{x}^{(t+1)}}{\left\| \mathbf{x}^{(t+1)} \right\|}
 
 for :math:`t=0,1,...`, where :math:`\widehat{V}_D(\mathbf{x}) = \left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x}),..., \widehat{\mathbf{v}}_q(\mathbf{x}) \right] \in \mathbb{R}^{(q+1)\times (q-d)}` has its columns as the last :math:`(q-d)` eigenvectors of the estimated Riemannian Hessian :math:`\mathcal{H} \widehat{f}_b(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}`.
 
