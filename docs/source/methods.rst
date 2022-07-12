@@ -67,13 +67,20 @@ where :math:`L(\cdot)` is the directional kernel (e.g., the von Mises kernel :ma
 
     \text{ and } \quad \mathbf{x}^{(t+1)} \gets \frac{\mathbf{x}^{(t+1)}}{\left\| \mathbf{x}^{(t+1)} \right\|_2}
 
-for :math:`t=0,1,...`, where :math:`\widehat{V}_D(\mathbf{x}) = \left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x}),..., \widehat{\mathbf{v}}_q(\mathbf{x}) \right] \in \mathbb{R}^{(q+1)\times (q-d)}` has its columns as the last :math:`(q-d)` eigenvectors of the estimated Riemannian Hessian :math:`\mathcal{H} \widehat{f}_b(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}`.
+for :math:`t=0,1,...`, where :math:`\widehat{V}_D(\mathbf{x}) = \left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x}),..., \widehat{\mathbf{v}}_q(\mathbf{x}) \right] \in \mathbb{R}^{(q+1)\times (q-d)}` has its columns as the last :math:`(q-d)` eigenvectors of the estimated Riemannian Hessian :math:`\mathcal{H} \widehat{f}_b(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}`. Notice that we leverage the normalized (total) gradient
+
+.. math::
+
+    \frac{\nabla \hat{f}_b(\mathbf{x}^{(t)})}{\left\|\nabla \hat{f}_b(\mathbf{x}^{(t)}) \right\|_2} = \frac{\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right)}{\left\|\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right) \right\|_2}
+    
+in the design of our *DirSCMS* algorithm in pursuit of a faster convergence rate [5]_.
 
 
 
 Directional-linear SCMS (*DirLinSCMS*) Algorithm on the 3D Light Cone :math:`\mathbb{S}^2\times \mathbb{R}`
 ------------
 
+Our *DirLinSCMS* algorithm makes a further generalization of the above *DirSCMS* algorithm and addresses the density ridge estimation problem on a directional-linear product space :math:`\mathbb{S}^q\times \mathbb{R}^D`. We assume that its input data comprise independent and identically distributed (i.i.d.) observations :math:`(\mathbf{X}_i,\mathbf{Z}_i), i=1,...,n` sampled from a directional-linear density :math:`f_{dl}(\mathbf{x},\mathbf{z})`. 
 
 
 References
