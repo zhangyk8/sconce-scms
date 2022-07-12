@@ -18,7 +18,7 @@ To estimate the theoretical density ridge :math:`R_d(p)` in practice, we leverag
 
     \widehat{p}(\mathbf{x}) = \frac{1}{nb^D} \sum_{i=1}^n K\left(\left\|\frac{\mathbf{x}-\mathbf{X}_i}{b} \right\|_2^2 \right),
 
-where :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\} \subset \mathbb{R}^D` is a random sample from :math:`p`, :math:`K:\mathbb{R} \to \mathbb{R}^+` is the kernel function (e.g., the Gaussian kernel :math:`K(r)=\frac{1}{(2\pi)^{D/2}} \exp\left(\frac{r}{2} \right)`), and :math:`b` is the smoothing bandwidth parameter. The standard SCMS algorithm in :math:`\mathbb{R}^D` is then applied to an initial mesh of points and iterates the following formula for :math:`t=0,1,...`:
+where :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\} \subset \mathbb{R}^D` is a random sample from :math:`p`, :math:`\|\cdot\|_2` is the usual Euclidean norm, :math:`K:\mathbb{R} \to \mathbb{R}^+` is the kernel function (e.g., the Gaussian kernel :math:`K(r)=\frac{1}{(2\pi)^{D/2}} \exp\left(\frac{r}{2} \right)`), and :math:`b` is the smoothing bandwidth parameter. The standard SCMS algorithm in :math:`\mathbb{R}^D` is then applied to an initial mesh of points and iterates the following formula for :math:`t=0,1,...`:
 
 .. math::
 
@@ -61,11 +61,11 @@ where :math:`L(\cdot)` is the directional kernel (e.g., the von Mises kernel :ma
 
 .. math::
 
-    \mathbf{x}^{(t+1)} \gets \mathbf{x}^{(t)} - \widehat{V}_D(\mathbf{x}^{(t)}) \widehat{V}_D(\mathbf{x}^{(t)})^T \left[\frac{\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right)}{\left\|\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right) \right\|} \right]
+    \mathbf{x}^{(t+1)} \gets \mathbf{x}^{(t)} - \widehat{V}_D(\mathbf{x}^{(t)}) \widehat{V}_D(\mathbf{x}^{(t)})^T \left[\frac{\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right)}{\left\|\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right) \right\|_2} \right]
     
 .. math::
 
-    \text{ and } \quad \mathbf{x}^{(t+1)} \gets \frac{\mathbf{x}^{(t+1)}}{\left\| \mathbf{x}^{(t+1)} \right\|}
+    \text{ and } \quad \mathbf{x}^{(t+1)} \gets \frac{\mathbf{x}^{(t+1)}}{\left\| \mathbf{x}^{(t+1)} \right\|_2}
 
 for :math:`t=0,1,...`, where :math:`\widehat{V}_D(\mathbf{x}) = \left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x}),..., \widehat{\mathbf{v}}_q(\mathbf{x}) \right] \in \mathbb{R}^{(q+1)\times (q-d)}` has its columns as the last :math:`(q-d)` eigenvectors of the estimated Riemannian Hessian :math:`\mathcal{H} \widehat{f}_b(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}`.
 
