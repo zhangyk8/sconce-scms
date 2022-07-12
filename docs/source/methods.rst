@@ -4,7 +4,7 @@ Methodology
 Standard SCMS Algorithm on the Euclidean Space :math:`\mathbb{R}^D`
 ------------
 
-The subspace constrained mean shift (SCMS) algorithm [2]_ is designed to estimate the density ridges, the lower dimensional structures at which the density peak. Given a (smooth) density function :math:`p` supported on :math:`\mathbb{R}^D`, its d-dimensional density ridge is defined as
+The subspace constrained mean shift (SCMS) algorithm [2]_ is designed to estimate the density ridges, the lower dimensional structures at which the density peak. Given a (smooth) density function :math:`p` supported on :math:`\mathbb{R}^D`, its :math:`d`-dimensional density ridge is defined as
 
 .. math::
 
@@ -31,6 +31,14 @@ until convergence on each initial point :math:`\mathbf{x}^{(0)}`, where :math:`\
 
 Directional SCMS (*DirSCMS*) Algorithm on the Unit Sphere :math:`\mathbb{S}^q`
 ------------
+
+Our *DirSCMS* algorithm takes a discrete collection of observations :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\}` on the unit (hyper)sphere :math:`\mathbb{S}^q=\left\{\mathbf{x}\in \mathbb{R}^{q+1}:\|\mathbf{x}\|=1 \right\}` and estimates the density ridge of the underlying directional density function :math:`f:\mathbb{S}^q \to \mathbb{R}`. The definition of the order-:math:`d` directional density ridge of :math:`f` is generalized from the above Euclidean counterpart as:
+
+.. math::
+
+    R_d(f) = \left\{\mathbf{x} \in \mathbb{S}^q: V_D(\mathbf{x})^T \mathtt{grad} f(\mathbf{x})=\mathbf{0} \right\},
+    
+where :math:`\mathtt{grad} f(\mathbf{x})` is the Riemannian gradient of :math:`f` and :math:`V_D(\mathbf{x})=\left[\mathbf{v}_{d+1}(\mathbf{x}),..., \mathbf{v}_q(\mathbf{x})\right] \in \mathbb{R}^{(q+1)\times (q-d)}` consists of the last :math:`(q-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}` associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x}) \geq \cdots \geq \lambda_q(\mathbf{x})`. Notice that the main difference here is that the directional density ridge :math:`R_d(f)` is defined through the Riemannian gradient and Hessian of the directional density :math:`f` within the tangent space :math:`\mathbb{S}^q`. To compute these derivative quantities, one observe the following connections from the Riemannian gradient (or Riemannian Hessian) on :math:`\mathbb{S}^q` to the total gradient (or total Hessian) in the ambient Euclidean space :math:`\mathbb{R}^{q+1}` as:
 
 
 
