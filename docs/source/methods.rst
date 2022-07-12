@@ -26,7 +26,17 @@ where :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\} \subset \mathbb{R}^D` is a random
 
 until convergence on each initial point :math:`\mathbf{x}^{(0)}`, where :math:`\widehat{V}_E=\left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x}),..., \widehat{\mathbf{v}}_D(\mathbf{x})\right] \in \mathbb{R}^{D\times (D-d)}` has its columns as the last :math:`(D-d)` eigenvectors of the estimated Hessian :math:`\nabla\nabla \hat{p}(\mathbf{x})`. The set of converged points is a discrete sample from the estimated density ridge :math:`R_d(\widehat{p})`.
 
-Despite its fast convergence and wide applications in identifying density ridges, the standard SCMS algorithm fails to take into account any non-linear curvature in the data space; see Figure 1 in [1]_ and Appendix B in [5]_ for the spherical data case. 
+**Despite its fast convergence and wide applications in identifying density ridges, the standard SCMS algorithm fails to take into account any non-linear curvature in the data space**; see Figure 1 in [1]_ and Appendix B in [5]_ for the spherical data case. 
+
+
+Directional SCMS (*DirSCMS*) Algorithm on the Unit Sphere :math:`\mathbb{S}^q`
+------------
+
+
+
+
+Directional-linear SCMS (*DirLinSCMS*) Algorithm on the 3D Light Cone :math:`\mathbb{S}^2\times \mathbb{R}`
+------------
 
 
 
