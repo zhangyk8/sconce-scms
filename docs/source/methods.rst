@@ -38,9 +38,20 @@ Our *DirSCMS* algorithm takes a discrete collection of observations :math:`\{\ma
 
     R_d(f) = \left\{\mathbf{x} \in \mathbb{S}^q: V_D(\mathbf{x})^T \mathtt{grad} f(\mathbf{x})=\mathbf{0} \right\},
     
-where :math:`\mathtt{grad} f(\mathbf{x})` is the Riemannian gradient of :math:`f` and :math:`V_D(\mathbf{x})=\left[\mathbf{v}_{d+1}(\mathbf{x}),..., \mathbf{v}_q(\mathbf{x})\right] \in \mathbb{R}^{(q+1)\times (q-d)}` consists of the last :math:`(q-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}` associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x}) \geq \cdots \geq \lambda_q(\mathbf{x})`. Notice that the main difference here is that the directional density ridge :math:`R_d(f)` is defined through the Riemannian gradient and Hessian of the directional density :math:`f` within the tangent space :math:`\mathbb{S}^q`. To compute these derivative quantities, one observe the following connections from the Riemannian gradient (or Riemannian Hessian) on :math:`\mathbb{S}^q` to the total gradient (or total Hessian) in the ambient Euclidean space :math:`\mathbb{R}^{q+1}` as:
+where :math:`\mathtt{grad} f(\mathbf{x})` is the Riemannian gradient of :math:`f` and :math:`V_D(\mathbf{x})=\left[\mathbf{v}_{d+1}(\mathbf{x}),..., \mathbf{v}_q(\mathbf{x})\right] \in \mathbb{R}^{(q+1)\times (q-d)}` consists of the last :math:`(q-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}` associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x}) \geq \cdots \geq \lambda_q(\mathbf{x})`. Notice that the main difference here is that the directional density ridge :math:`R_d(f)` is defined through the Riemannian gradient and Hessian of the directional density :math:`f` within the tangent space :math:`\mathbb{S}^q`. To compute these derivative quantities, one can extend the domain of :math:`f` from :math:`\mathbb{S}^q` to its ambient Euclidean space :math:`\mathbb{R}^{q+1}\setminus\{\mathbf{0}\}`. Then, the Riemannian gradient and Hessian on :math:`\mathbb{S}^q` are connected with the total gradient :math:`\nabla f(\mathbf{x})` and Hessian :math:`\mathcal{H} f(\mathbf{x})` in :math:`\mathbb{R}^{q+1}` as:
 
+.. math::
 
+    \mathtt{grad} f(\mathbf{x}) = (\mathbf{I}_{q+1} -\mathbf{x}\mathbf{x}^T) \nabla f(\mathbf{x}),
+    \mathcal{H} f(\mathbf{x}) = (\mathbf{I}_{q+1} -\mathbf{x}\mathbf{x}^T) \left[\nabla\nabla f(\mathbf{x}) - \nabla f(\mathbf{x})^T \mathbf{x} \cdot \mathbf{I}_{q+1} \right] (\mathbf{I}_{q+1} -\mathbf{x}\mathbf{x}^T).
+    
+To identify the directional density ridge :math:`R_d(f)` from :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\} \subset \mathbb{S}^q`, we first estimate the directional density :math:`f` via the directional KDE as:
+
+.. math::
+
+    \widehat{f}_b(\mathbf{x}) = \frac{C_L(b)}{n} \sum_{i=1}^n L\left(\frac{1-\mathbf{x}^T\mathbf{X}_i}{b^2} \right),
+    
+where :math:`L(\cdot)` is the directional kernel (e.g., the von Mises kernel :math:`L(r)=e^{-r}`), :math:`b` is the smoothing bandwidth parameter, and :math:`C_L(b)` is the normalizing constant ensuring that :math:`\widehat{f}_b` is a density on :math:`\mathbb{S}^q`.
 
 
 Directional-linear SCMS (*DirLinSCMS*) Algorithm on the 3D Light Cone :math:`\mathbb{S}^2\times \mathbb{R}`
@@ -53,7 +64,7 @@ References
 
 .. [1] Zhang, Y., de Souza, R. S., and Chen, Y.-C. (2022+). SCONCE: A Cosmic Web Finder for Spherical and Conic Geometries.
 .. [2] Ozertem, U. and Erdogmus, D. (2011). Locally defined principal curves and surfaces. *Journal of Machine Learning Research*, **12**, 1249-1286.
-.. [3] Genovese, C.R., Perone-Pacifico, M., Verdinelli, I. and Wasserman, L. (2014). Nonparametric ridge estimation. The Annals of Statistics, **42**(4), 1511-1545.
+.. [3] Genovese, C.R., Perone-Pacifico, M., Verdinelli, I. and Wasserman, L. (2014). Nonparametric ridge estimation. *The Annals of Statistics*, **42**(4), 1511-1545.
 .. [4] Chen, Y.-C., Ho, S., Freeman, P.E., Genovese, C.R. and Wasserman, L. (2015). Cosmic web reconstruction through density ridges: method and algorithm. *Monthly Notices of the Royal Astronomical Society*, **454**(1), 1140-1156.
 .. [5] Zhang, Y. and Chen, Y.-C. (2022). Linear convergence of the subspace constrained mean shift algorithm: from Euclidean to directional data. *Information and Inference: A Journal of the IMA*, iaac005, `https://doi.org/10.1093/imaiai/iaac005 <https://doi.org/10.1093/imaiai/iaac005>`_.
 .. [6] Zhang, Y. and Chen, Y.-C. (2021). Mode and ridge estimation in euclidean and directional product spaces: A mean shift approach. *arXiv preprint arXiv:2110.08505*, `https://arxiv.org/abs/2110.08505 <https://arxiv.org/abs/2110.08505>`_.
