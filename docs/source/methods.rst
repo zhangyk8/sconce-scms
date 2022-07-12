@@ -32,7 +32,7 @@ until convergence on each initial point :math:`\mathbf{x}^{(0)}`, where :math:`\
 Directional SCMS (*DirSCMS*) Algorithm on the Unit Sphere :math:`\mathbb{S}^q`
 ------------
 
-Our *DirSCMS* algorithm takes a discrete collection of observations :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\}` on the unit (hyper)sphere :math:`\mathbb{S}^q=\left\{\mathbf{x}\in \mathbb{R}^{q+1}:\|\mathbf{x}\|=1 \right\}` and estimates the density ridge of the underlying directional density function :math:`f:\mathbb{S}^q \to \mathbb{R}`. The definition of the order-:math:`d` directional density ridge of :math:`f` is generalized from the above Euclidean counterpart as:
+Our *DirSCMS* algorithm [5]_ takes a discrete collection of observations :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\}` on the unit (hyper)sphere :math:`\mathbb{S}^q=\left\{\mathbf{x}\in \mathbb{R}^{q+1}:\|\mathbf{x}\|=1 \right\}` and estimates the density ridge of the underlying directional density function :math:`f:\mathbb{S}^q \to \mathbb{R}`. The definition of the order-:math:`d` directional density ridge of :math:`f` is generalized from the above Euclidean counterpart as:
 
 .. math::
 
