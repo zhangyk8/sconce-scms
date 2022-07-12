@@ -17,7 +17,7 @@ def DirKDE(x, data, h=None, wt=None):
     '''
     The q-dim directional KDE with the von Mises kernel.
     
-    Parameters:
+    Parameters
     ----------
         x: (m,d)-array
             The Eulidean coordinates of m query points on a unit hypersphere, 
@@ -37,7 +37,7 @@ def DirKDE(x, data, h=None, wt=None):
             sample points. (Default: wt=None, that is, each data point has an 
             equal weight "1/n".)
     
-    Return:
+    Return
     ----------
         f_hat: (m,)-array
             The corresponding directinal kernel density estimates at m query 
@@ -152,7 +152,7 @@ def DirMS(y_0, data, h=None, eps=1e-7, max_iter=1000, wt=None, diff_method='all'
     '''
     Directional mean shift algorithm with the von-Mises Kernel.
     
-    Parameters:
+    Parameters
     ----------
         y_0: (N,d)-array
             The Euclidean coordinates of N directional initial points in 
@@ -189,7 +189,7 @@ def DirMS(y_0, data, h=None, eps=1e-7, max_iter=1000, wt=None, diff_method='all'
             diff_method='mean', only the mean difference is compared with 'eps'
             and stop the algorithm. Default: diff_method='all'.)
     
-    Return:
+    Return
     ----------
         MS_path: (N,d,T)-array
             The whole iterative trajectory of every initial point yielded by 
@@ -244,7 +244,7 @@ def DirSCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
     Directional Subspace Constrained Mean Shift algorithm with log density and 
     von-Mises kernel.
     
-    Parameters:
+    Parameters
     ----------
         mesh_0: a (m,D)-array
             The Euclidean coordinates of m directional initial points in the 
@@ -283,7 +283,7 @@ def DirSCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             point need to be smaller than 'eps' for terminating the algorithm.)
             (Default: stop_cri='proj_grad'.)
     
-    Return:
+    Return
     ----------
         SCMS_path: (m,D,T)-array
             The entire iterative DirSCMS sequence for each initial point.
@@ -366,7 +366,7 @@ def DirSCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
     Directional Subspace Constrained Mean Shift Algorithm with the von-Mises 
     kernel. 
     
-    Parameters:
+    Parameters
     ----------
         mesh_0: a (m,D)-array
             The Euclidean coordinates of m directional initial points in the 
@@ -405,7 +405,7 @@ def DirSCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             point need to be smaller than 'eps' for terminating the algorithm.)
             (Default: stop_cri='proj_grad'.)
     
-    Return:
+    Return
     ----------
         SCMS_path: (m,D,T)-array
             The entire iterative DirSCMS sequence for each initial point.
