@@ -41,3 +41,5 @@ References
 [4] Y. Zhang and Y.-C. Chen (2021). Kernel Smoothing, Mean Shift, and Their Learning Theory with Directional Data. *Journal of Machine Learning Research*, **22**(154), 1-92.
 
 [5] Y. Zhang and Y.-C. Chen (2022). Linear convergence of the subspace constrained mean shift algorithm: from Euclidean to directional data. *Information and Inference: A Journal of the IMA*, iaac005, [https://doi.org/10.1093/imaiai/iaac005](https://doi.org/10.1093/imaiai/iaac005).
+
+[6] Y. Zhang and Y.-C. Chen (2021). Mode and ridge estimation in euclidean and directional product spaces: A mean shift approach. *arXiv preprint arXiv:2110.08505*.
