@@ -134,17 +134,17 @@ def DirLinMS(mesh_0, data, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000):
             for details.)
             
         q: int
-            Intrinsic data dimension of directional components. (Default: q=2.)
+            Intrinsic data dimension of directional components.
             
         D: int
-            Data dimension of linear components. (Default: D=1.)
+            Data dimension of linear components.
        
         eps: float
-            The precision parameter. (Default: eps=1e-7.)
+            The precision parameter.
        
         max_iter: int
             The maximum number of iterations for the MS algorithm on each 
-            initial point. (Default: max_iter=1000.)
+            initial point.
     
     Return
     ----------
@@ -250,17 +250,17 @@ def DirLinMS_CA(mesh_0, data, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000)
             for details.)
             
         q: int
-            Intrinsic data dimension of directional components. (Default: q=2.)
+            Intrinsic data dimension of directional components.
             
         D: int
-            Data dimension of linear components. (Default: D=1.)
+            Data dimension of linear components.
        
         eps: float
-            The precision parameter. (Default: eps=1e-7.)
+            The precision parameter.
        
         max_iter: int
             The maximum number of iterations for the MS algorithm on each 
-            initial point. (Default: max_iter=1000.)
+            initial point.
     
     Return
     ----------
@@ -358,7 +358,7 @@ def DirLinSCMS(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1
             (last D columns).
             
         d: int
-            The order of the density ridge. (Default: d=1.)
+            The order of the density ridge.
        
         h: float
             Bandwidth parameter for the directional component. (Default: h=None. 
@@ -371,17 +371,17 @@ def DirLinSCMS(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1
             for details.)
             
         q: int
-            Intrinsic data dimension of directional components. (Default: q=2.)
+            Intrinsic data dimension of directional components.
             
         D: int
-            Data dimension of linear components. (Default: D=1.)
+            Data dimension of linear components.
        
         eps: float
-            The precision parameter. (Default: eps=1e-7.)
+            The precision parameter.
        
         max_iter: int
             The maximum number of iterations for the MS algorithm on each 
-            initial point. (Default: max_iter=1000.)
+            initial point.
             
     Returns
     ----------
@@ -537,7 +537,7 @@ def DirLinSCMSLog(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_ite
             (last D columns).
             
         d: int
-            The order of the density ridge. (Default: d=1.)
+            The order of the density ridge.
        
         h: float
             Bandwidth parameter for the directional component. (Default: h=None. 
@@ -550,17 +550,17 @@ def DirLinSCMSLog(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_ite
             for details.)
             
         q: int
-            Intrinsic data dimension of directional components. (Default: q=2.)
+            Intrinsic data dimension of directional components.
             
         D: int
-            Data dimension of linear components. (Default: D=1.)
+            Data dimension of linear components.
        
         eps: float
-            The precision parameter. (Default: eps=1e-7.)
+            The precision parameter.
        
         max_iter: int
             The maximum number of iterations for the MS algorithm on each 
-            initial point. (Default: max_iter=1000.)
+            initial point.
             
     Returns
     ----------
