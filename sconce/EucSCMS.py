@@ -127,11 +127,11 @@ def MS(mesh_0, data, h=None, eps=1e-7, max_iter=1000, wt=None):
             rule of thumb is applied. See Chen et al.(2016) for details.)
        
         eps: float
-            The precision parameter. (Default: eps=1e-7.)
+            The precision parameter. 
        
         max_iter: int
             The maximum number of iterations for the SCMS algorithm on each 
-            initial point. (Default: max_iter=1000)
+            initial point. 
             
         wt: (n,)-array
             The weights of kernel density contributions for n random sample 
@@ -197,18 +197,18 @@ def SCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             The coordinates of n data sample points in the D-dim Euclidean space.
        
         d: int
-            The order of the density ridge. (Default: d=1.)
+            The order of the density ridge.
        
         h: float
             The bandwidth parameter. (Default: h=None. Then the Silverman's 
             rule of thumb is applied. See Chen et al.(2016) for details.)
        
         eps: float
-            The precision parameter. (Default: eps=1e-7.)
+            The precision parameter.
        
         max_iter: int
             The maximum number of iterations for the SCMS algorithm on each 
-            initial point. (Default: max_iter=1000)
+            initial point.
             
         wt: (n,)-array
             The weights of kernel density contributions for n random sample 
@@ -222,7 +222,6 @@ def SCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             'eps' for terminating the algorithm. When stop_cri='proj_grad' or 
             others, the projected/principal gradient of the current point need to be 
             smaller than 'eps' for terminating the algorithm.)
-            (Default: stop_cri='proj_grad'.)
     
     Return
     ----------
@@ -306,18 +305,18 @@ def SCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None, stop_cri='
             The coordinates of n data sample points in the D-dim Euclidean space.
        
         d: int
-            The order of the density ridge. (Default: d=1.)
+            The order of the density ridge.
        
         h: float
             The bandwidth parameter. (Default: h=None. Then the Silverman's 
             rule of thumb is applied. See Chen et al.(2016) for details.)
        
         eps: float
-            The precision parameter. (Default: eps=1e-7.)
+            The precision parameter.
        
         max_iter: int
             The maximum number of iterations for the SCMS algorithm on each 
-            initial point. (Default: max_iter=1000)
+            initial point.
             
         wt: (n,)-array
             The weights of kernel density contributions for n random sample 
@@ -331,7 +330,6 @@ def SCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None, stop_cri='
             'eps' for terminating the algorithm. When stop_cri='proj_grad' or 
             others, the projected/principal gradient of the current point need to be 
             smaller than 'eps' for terminating the algorithm.)
-            (Default: stop_cri='proj_grad'.)
             
     Return
     ----------
