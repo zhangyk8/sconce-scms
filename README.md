@@ -32,7 +32,7 @@ Quick Start
 References
 --------
 
-<a name="sconce">[1]</a> Y. Zhang, R. S. de Souza, and Y.-C. Chen (2022+). SCONCE: A Filament Finder for Spherical and Conic Cosmic Web Geometries.
+<a name="sconce">[1]</a> Y. Zhang, R. S. de Souza, and Y.-C. Chen (2022+). SCONCE: A Cosmic Web Finder for Spherical and Conic Geometries.
 
 <a name="scms">[2]</a> U. Ozertem and D. Erdogmus (2011). Locally Defined Principal Curves and Surfaces. *Journal of Machine Learning Research*, **12**, 1249-1286.
 
