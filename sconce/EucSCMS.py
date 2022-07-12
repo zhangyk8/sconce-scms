@@ -16,7 +16,7 @@ def KDE(x, data, h=None, wt=None):
     '''
     The d-dim Euclidean KDE with the Gaussian kernel.
     
-    Parameters:
+    Parameters
     ----------
         x: (m,d)-array
             The coordinates of m query points in the d-dim Euclidean space.
@@ -34,7 +34,7 @@ def KDE(x, data, h=None, wt=None):
             points. (Default: wt=None, that is, each data point has an equal
             weight "1/n".)
     
-    Return:
+    Return
     ----------
         f_hat: (m,)-array
             The corresponding kernel density estimates at m query points.
@@ -61,7 +61,7 @@ def KDEGradLog(x, data, h=None, wt=None):
     '''
     The gradient of the logarithm of the d-dim Euclidean KDE with Gaussian kernel.
     
-    Parameters:
+    Parameters
     ----------
         x: (m,d)-array
             The coordinates of m query points in the d-dim Euclidean space.
@@ -79,7 +79,7 @@ def KDEGradLog(x, data, h=None, wt=None):
             points. (Default: wt=None, that is, each data point has an equal
             weight "1/n".)
     
-    Return:
+    Return
     ----------
         grad_log_hat: (m,d)-array
             The corresponding gradients of the log-KDEs at m query points.
@@ -96,6 +96,8 @@ def KDEGradLog(x, data, h=None, wt=None):
     grad_log_hat = np.zeros((x.shape[0], d))
     if wt is None:
         wt = np.ones((n,1))
+    else:
+        wt = wt.reshape(n,1)
     for i in range(x.shape[0]):
         x_pts = x[i,:]
         # Compute the gradient of the log density
@@ -112,7 +114,7 @@ def MS(mesh_0, data, h=None, eps=1e-7, max_iter=1000, wt=None):
     '''
     Mean Shift Algorithm with the Gaussian kernel.
     
-    Parameters:
+    Parameters
     ----------
         mesh_0: a (m,d)-array
             The coordinates of m initial points in the d-dim Euclidean space.
@@ -136,7 +138,7 @@ def MS(mesh_0, data, h=None, eps=1e-7, max_iter=1000, wt=None):
             points. (Default: wt=None, that is, each data point has an equal
             weight "1/n".)
     
-    Return:
+    Return
     ----------
         MS_path: (m,d,T)-array
             The entire iterative MS sequence for each initial point.
@@ -186,7 +188,7 @@ def SCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
     '''
     Subspace Constrained Mean Shift algorithm with log density and Gaussian kernel.
     
-    Parameters:
+    Parameters
     ----------
         mesh_0: a (m,D)-array
             The coordinates of m initial points in the D-dim Euclidean space.
@@ -222,7 +224,7 @@ def SCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             smaller than 'eps' for terminating the algorithm.)
             (Default: stop_cri='proj_grad'.)
     
-    Return:
+    Return
     ----------
         SCMS_path: (m,D,T)-array
             The entire iterative SCMS sequence for each initial point.
@@ -295,7 +297,7 @@ def SCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None, stop_cri='
     '''
     Subspace Constrained Mean Shift Algorithm with Gaussian kernel.
     
-    Parameters:
+    Parameters
     ----------
         mesh_0: a (m,D)-array
             The coordinates of m initial points in the D-dim Euclidean space.
@@ -331,7 +333,7 @@ def SCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None, stop_cri='
             smaller than 'eps' for terminating the algorithm.)
             (Default: stop_cri='proj_grad'.)
             
-    Return:
+    Return
     ----------
         SCMS_path: (m,D,T)-array
             The entire iterative SCMS sequence for each initial point.
