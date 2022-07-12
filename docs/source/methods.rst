@@ -43,15 +43,18 @@ where :math:`\mathtt{grad} f(\mathbf{x})` is the Riemannian gradient of :math:`f
 .. math::
 
     \mathtt{grad} f(\mathbf{x}) = (\mathbf{I}_{q+1} -\mathbf{x}\mathbf{x}^T) \nabla f(\mathbf{x}),
+    
+.. math::
+
     \mathcal{H} f(\mathbf{x}) = (\mathbf{I}_{q+1} -\mathbf{x}\mathbf{x}^T) \left[\nabla\nabla f(\mathbf{x}) - \nabla f(\mathbf{x})^T \mathbf{x} \cdot \mathbf{I}_{q+1} \right] (\mathbf{I}_{q+1} -\mathbf{x}\mathbf{x}^T).
     
-To identify the directional density ridge :math:`R_d(f)` from :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\} \subset \mathbb{S}^q`, we first estimate the directional density :math:`f` via the directional KDE as:
+To identify the directional density ridge :math:`R_d(f)` from :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\} \subset \mathbb{S}^q`, we first estimate the directional density :math:`f` via the directional KDE ([6]_, [7]_) as:
 
 .. math::
 
     \widehat{f}_b(\mathbf{x}) = \frac{C_L(b)}{n} \sum_{i=1}^n L\left(\frac{1-\mathbf{x}^T\mathbf{X}_i}{b^2} \right),
     
-where :math:`L(\cdot)` is the directional kernel (e.g., the von Mises kernel :math:`L(r)=e^{-r}`), :math:`b` is the smoothing bandwidth parameter, and :math:`C_L(b)` is the normalizing constant ensuring that :math:`\widehat{f}_b` is a density on :math:`\mathbb{S}^q`.
+where :math:`L(\cdot)` is the directional kernel (e.g., the von Mises kernel :math:`L(r)=e^{-r}`), :math:`b` is the smoothing bandwidth parameter, and :math:`C_L(b)` is the normalizing constant ensuring that :math:`\widehat{f}_b` is a valid density on :math:`\mathbb{S}^q`. 
 
 
 Directional-linear SCMS (*DirLinSCMS*) Algorithm on the 3D Light Cone :math:`\mathbb{S}^2\times \mathbb{R}`
@@ -67,4 +70,6 @@ References
 .. [3] Genovese, C.R., Perone-Pacifico, M., Verdinelli, I. and Wasserman, L. (2014). Nonparametric ridge estimation. *The Annals of Statistics*, **42**(4), 1511-1545.
 .. [4] Chen, Y.-C., Ho, S., Freeman, P.E., Genovese, C.R. and Wasserman, L. (2015). Cosmic web reconstruction through density ridges: method and algorithm. *Monthly Notices of the Royal Astronomical Society*, **454**(1), 1140-1156.
 .. [5] Zhang, Y. and Chen, Y.-C. (2022). Linear convergence of the subspace constrained mean shift algorithm: from Euclidean to directional data. *Information and Inference: A Journal of the IMA*, iaac005, `https://doi.org/10.1093/imaiai/iaac005 <https://doi.org/10.1093/imaiai/iaac005>`_.
-.. [6] Zhang, Y. and Chen, Y.-C. (2021). Mode and ridge estimation in euclidean and directional product spaces: A mean shift approach. *arXiv preprint arXiv:2110.08505*, `https://arxiv.org/abs/2110.08505 <https://arxiv.org/abs/2110.08505>`_.
+.. [6] Hall, P., Watson, G.S. and Cabrera, J. (1987). Kernel density estimation with spherical data. *Biometrika*, **74**(4), 751-762.
+.. [7] García–Portugués, E. (2013). Exact risk improvement of bandwidth selectors for kernel density estimation with directional data. *Electronic Journal of Statistics*, **7**, 1655-1685.
+.. [8] Zhang, Y. and Chen, Y.-C. (2021). Mode and ridge estimation in euclidean and directional product spaces: A mean shift approach. *arXiv preprint arXiv:2110.08505*, `https://arxiv.org/abs/2110.08505 <https://arxiv.org/abs/2110.08505>`_.
