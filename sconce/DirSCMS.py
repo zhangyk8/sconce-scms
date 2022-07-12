@@ -169,11 +169,9 @@ def DirMS(y_0, data, h=None, eps=1e-7, max_iter=1000, wt=None, diff_method='all'
         
         eps: float
             The precision parameter for stopping the mean shift iteration.
-            (Default: eps=1e-7)
         
         max_iter: int
             The maximum number of iterations for the mean shift iteration.
-            (Default: max_iter=1000)
             
         wt: (n,)-array
             The weights of kernel density contributions for n directional random 
@@ -187,7 +185,7 @@ def DirMS(y_0, data, h=None, eps=1e-7, max_iter=1000, wt=None, diff_method='all'
             differences between two consecutive sets of iteration points need 
             to be smaller than 'eps' for terminating the algorithm. When 
             diff_method='mean', only the mean difference is compared with 'eps'
-            and stop the algorithm. Default: diff_method='all'.)
+            and stop the algorithm.)
     
     Return
     ----------
@@ -255,7 +253,7 @@ def DirSCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             D-dimensional Euclidean space.
        
         d: int
-            The order of the density ridge. (Default: d=1.)
+            The order of the density ridge.
        
         h: float
             The bandwidth parameter. (Default: h=None. Then a rule of thumb for 
@@ -263,11 +261,11 @@ def DirSCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             is applied.)
        
         eps: float
-            The precision parameter. (Default: eps=1e-7.)
+            The precision parameter.
        
         max_iter: int
             The maximum number of iterations for the directional SCMS algorithm 
-            on each initial point. (Default: max_iter=1000.)
+            on each initial point.
             
         wt: (n,)-array
             The weights of kernel density contributions for n directional random 
@@ -281,7 +279,6 @@ def DirSCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             'eps' for terminating the algorithm. When stop_cri='proj_grad' or 
             others, the projected/principal (Riemannian) gradient of the current 
             point need to be smaller than 'eps' for terminating the algorithm.)
-            (Default: stop_cri='proj_grad'.)
     
     Return
     ----------
@@ -377,7 +374,7 @@ def DirSCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             D-dimensional Euclidean space.
        
         d: int
-            The order of the density ridge. (Default: d=1.)
+            The order of the density ridge.
        
         h: float
             The bandwidth parameter. (Default: h=None. Then a rule of thumb for 
@@ -385,11 +382,11 @@ def DirSCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             is applied.)
        
         eps: float
-            The precision parameter. (Default: eps=1e-7.)
+            The precision parameter.
        
         max_iter: int
             The maximum number of iterations for the directional SCMS algorithm 
-            on each initial point. (Default: max_iter=1000.)
+            on each initial point.
             
         wt: (n,)-array
             The weights of kernel density contributions for n directional random 
@@ -403,7 +400,6 @@ def DirSCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
             'eps' for terminating the algorithm. When stop_cri='proj_grad' or 
             others, the projected/principal (Riemannian) gradient of the current 
             point need to be smaller than 'eps' for terminating the algorithm.)
-            (Default: stop_cri='proj_grad'.)
     
     Return
     ----------
