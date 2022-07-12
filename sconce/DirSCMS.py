@@ -3,470 +3,705 @@
 # Author: Yikun Zhang
 # Last Editing: June 26, 2022
 
-# Description: This script contains code for the directional kernel density 
-# estimator with the von Mises kernel, its gradient estimator, directional mean 
-# shift (DMS), and directional subspace constrained mean shift (DirSCMS) algorithms.
+# Description: This script contains code for the directional-linear kernel density 
+# estimator with the von Mises and Gaussian kernels, directional-linear mean shift 
+# (DirLinMS), and directional-linear subspace constrained mean shift (DirLinSCMS) 
+# algorithms.
 
 import numpy as np
 from numpy import linalg as LA
 import scipy.special as sp
 
-#=================================================================================#
+#==========================================================================================#
 
-def DirKDE(x, data, h=None, wt=None):
+def DirLinKDE(x, data, h=None, b=None, q=2, D=1):
     '''
-    The q-dim directional KDE with the von Mises kernel.
+    Directional-linear KDE with the von Mises and Gaussian kernels
     
     Parameters
     ----------
-        x: (m,d)-array
-            The Eulidean coordinates of m query points on a unit hypersphere, 
-            where d=q+1 is the Euclidean dimension of data
+        x: (m, q+1+D)-array
+            Eulidean coordinates of m directional-linear query points, where 
+            (q+1) is the Euclidean dimension of the directional component (first 
+            (q+1) columns) and D is the dimension of the linear component (last 
+            D columns).
     
-        data: (n,d)-array
-            The Euclidean coordinates of n directional random sample points in 
-            the d-dimensional Euclidean space.
+        data: (n, q+1+D)-array
+            Euclidean coordinates of n directional-linear random sample points, 
+            where (q+1) is the Euclidean dimension of the directional component 
+            (first (q+1) columns) and D is the dimension of the linear component
+            (last D columns).
        
         h: float
-            The bandwidth parameter. (Default: h=None. Then a rule of thumb for 
-            directional KDEs with the von Mises kernel in Garcia-Portugues (2013)
-            is applied.)
+            Bandwidth parameter for the directional component. (Default: h=None. 
+            Then a rule of thumb for directional KDEs with the von Mises kernel 
+            in Garcia-Portugues (2013) is applied.)
             
-        wt: (n,)-array
-            The weights of kernel density contributions for n directional random 
-            sample points. (Default: wt=None, that is, each data point has an 
-            equal weight "1/n".)
+        b: float
+            Bandwidth parameter for the linear component. (Default: h=None. 
+            Then the Silverman's rule of thumb is applied. See Chen et al.(2016) 
+            for details.)
+            
+        q: int
+            Intrinsic data dimension of directional components.
+            
+        D: int
+            Data dimension of linear components.
     
     Return
     ----------
         f_hat: (m,)-array
-            The corresponding directinal kernel density estimates at m query 
+            The corresponding directinal-linear density estimates at m query 
             points.
     '''
     n = data.shape[0]  ## Number of data points
-    d = data.shape[1]  ## Euclidean Dimension of the data
+    D_t = data.shape[1]  ## Total dimension of the data
+    
+    assert q+1+D == D_t, "The dimension of the input data, "+str(D_t)+", should "\
+    "equal to the sum of directional dimension ("+str(q+1)+") in its ambient "\
+    "space and linear dimension ("+str(D)+")."
+    
+    data_Dir = data[:,:(q+1)]
+    x_Dir = x[:,:(q+1)]
+    data_Lin = data[:,(q+1):(q+1+D)]
+    x_Lin = x[:,(q+1):(q+1+D)]
 
-    ## Rule of thumb for directional KDE
+    # Rule of thumb for directional component
     if h is None:
-        R_bar = np.sqrt(sum(np.mean(data, axis=0) ** 2))
+        R_bar = np.sqrt(sum(np.mean(data_Dir, axis=0) ** 2))
         ## An approximation to kappa (Banerjee 2005 & Sra, 2011)
-        kap_hat = R_bar * (d - R_bar ** 2) / (1 - R_bar ** 2)
-        if d == 3:
+        kap_hat = R_bar * (q + 1 - R_bar ** 2) / (1 - R_bar ** 2)
+        if q == 2:
             h = (8*np.sinh(kap_hat)**2/(n*kap_hat * \
                  ((1+4*kap_hat**2)*np.sinh(2*kap_hat) - 2*kap_hat*np.cosh(2*kap_hat))))**(1/6)
         else:
-            h = ((4 * np.sqrt(np.pi) * sp.iv(d / 2 - 1, kap_hat)**2) / \
-                 (n * kap_hat ** (d / 2) * (2 * (d - 1) * sp.iv(d/2, 2*kap_hat) + \
-                                  (d+1) * kap_hat * sp.iv(d/2+1, 2*kap_hat)))) ** (1/(d + 3))
-        print("The current bandwidth is " + str(h) + ".\n")
+            h = ((4 * np.sqrt(np.pi) * sp.iv((q-1) / 2 , kap_hat)**2) / \
+                 (n * kap_hat ** ((q+1) / 2) * (2 * q * sp.iv((q+1)/2, 2*kap_hat) + \
+                                  (q+2) * kap_hat * sp.iv((q+3)/2, 2*kap_hat)))) ** (1/(q + 4))
+        print("The current bandwidth for directional component is " + str(h) + ".\n")
     
-    if wt is None:
-        wt = np.ones((n,))/n
-    if d == 3:
-        f_hat = np.sum((wt * np.exp((np.dot(x, data.T)-1)/(h**2)))/\
-                       (2*np.pi*(1-np.exp(-2/h**2))*h**2), axis=1)
+    # Rule of thumb for linear component
+    if b is None:
+        # Apply Silverman's rule of thumb to select the bandwidth parameter 
+        b = (4/(D+2))**(1/(D+4))*(n**(-1/(D+4)))*np.mean(np.std(data_Lin, axis=0))
+        print("The current bandwidth for linear component is "+ str(b) + ".\n")
+    
+    # Compute the kernel weights contributed by directional components
+    if q == 2:
+        f_hat_Dir = np.exp((np.dot(x_Dir, data_Dir.T)-1)/(h**2))/(2*np.pi\
+                        *(1-np.exp(-2/h**2))*h**2)
     else:
-        f_hat = np.sum(wt * np.exp(np.dot(x, data.T)/(h**2))/((2*np.pi)**(d/2)*\
-                           sp.iv(d/2-1, 1/(h**2))*h**(d-2)), axis=1)
+        f_hat_Dir = np.exp(np.dot(x_Dir, data_Dir.T)/(h**2))/((2*np.pi)**((q+1)/2)*\
+                           sp.iv((q-1)/2, 1/(h**2))*h**(q-1))
+    
+    # Compute the kernel weights contributed by linear components
+    f_hat_Lin = np.zeros((x.shape[0], n))
+    for i in range(x.shape[0]):
+        f_hat_Lin[i,:] = np.exp(np.sum(-((x_Lin[i,:] - data_Lin)/b)**2, axis=1)/2)/ \
+                        ((2*np.pi)**(D/2)*np.prod(b))
+    
+    f_hat = np.mean(f_hat_Dir * f_hat_Lin, axis=1)
     return f_hat
 
 
-def DirKDEGradLog(x, data, h=None, wt=None):
+def DirLinMS(mesh_0, data, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000):
     '''
-    The (Riemannian) gradient of the logarithm of the q-dim directional KDE with
-    the von Mises kernel.
+    Directional-linear Mean Shift Algorithm with the von Mises and Gaussian kernels
+    (Simultaneous version)
     
     Parameters
     ----------
-        x: (m,d)-array
-            The Eulidean coordinates of m query points on a unit hypersphere, 
-            where d=q+1 is the Euclidean dimension of data
+        mesh_0: (m, q+1+D)-array
+            Eulidean coordinates of m directional-linear query points, where 
+            (q+1) is the Euclidean dimension of the directional component (first 
+            (q+1) columns) and D is the dimension of the linear component (last 
+            D columns).
     
-        data: (n,d)-array
-            The Euclidean coordinates of n directional random sample points in 
-            the d-dimensional Euclidean space.
+        data: (n, q+1+D)-array
+            Euclidean coordinates of n directional-linear random sample points, 
+            where (q+1) is the Euclidean dimension of the directional component 
+            (first (q+1) columns) and D is the dimension of the linear component
+            (last D columns).
        
         h: float
-            The bandwidth parameter. (Default: h=None. Then a rule of thumb for 
-            directional KDEs with the von Mises kernel in Garcia-Portugues (2013)
-            is applied.)
+            Bandwidth parameter for the directional component. (Default: h=None. 
+            Then a rule of thumb for directional KDEs with the von Mises kernel 
+            in Garcia-Portugues (2013) is applied.)
             
-        wt: (n,)-array
-            The weights of kernel density contributions for n directional random 
-            sample points. (Default: wt=None, that is, each data point has an equal
-            weight "1/n".)
-    
-    Return
-    ----------
-        Riem_grad_hat: (m,d)-array
-            The corresponding gradients of the log directional KDEs at m query 
-            points.
-    '''
-    n = data.shape[0]  ## Number of data points
-    D = data.shape[1]  ## Euclidean dimension of data points
-    ## Rule of thumb for directional KDE
-    if h is None:
-        R_bar = np.sqrt(sum(np.mean(data, axis=0) ** 2))
-        ## An approximation to kappa (Banerjee 2005 & Sra, 2011)
-        kap_hat = R_bar * (D - R_bar ** 2) / (1 - R_bar ** 2)
-        if D == 3:
-            h = (8*np.sinh(kap_hat)**2/(n*kap_hat * \
-                 ((1+4*kap_hat**2)*np.sinh(2*kap_hat) - 2*kap_hat*np.cosh(2*kap_hat))))**(1/6)
-        else:
-            h = ((4 * np.sqrt(np.pi) * sp.iv(D / 2 - 1, kap_hat)**2) / \
-                 (n * kap_hat ** (D / 2) * (2 * (D - 1) * sp.iv(D/2, 2*kap_hat) + \
-                                  (D+1) * kap_hat * sp.iv(D/2+1, 2*kap_hat)))) ** (1/(D + 3))
-        print("The current bandwidth is " + str(h) + ".\n")
-    
-    if wt is None:
-        wt = np.ones((n,1))
-    else:
-        wt = wt.reshape(n,1)
-        
-    Riem_grad_hat = np.zeros((x.shape[0], D))
-    for i in range(x.shape[0]):
-        x_pts = x[i,:].reshape(D,1)
-        # Compute the directional KDE up to a constant
-        den_prop = np.sum(wt*np.exp((np.dot(data, x_pts)-1)/(h**2)))
-        # Compute the total gradient of the log density
-        vtot_Log_grad = np.sum(wt*data*np.exp((np.dot(data, x_pts)-1)/(h**2)), axis=0) \
-            / ((h**2)*den_prop)
-        # Compute the projection matrix onto the tangent space 
-        proj_mat = np.diag(np.ones(D,)) - np.dot(x_pts, x_pts.T)
-        # Riemannian gradient estimator
-        Riem_grad_hat[i,:] = np.dot(proj_mat, vtot_Log_grad)   
-    return Riem_grad_hat
-
-
-def DirMS(y_0, data, h=None, eps=1e-7, max_iter=1000, wt=None, diff_method='all'):
-    '''
-    Directional mean shift algorithm with the von-Mises Kernel.
-    
-    Parameters
-    ----------
-        y_0: (N,d)-array
-            The Euclidean coordinates of N directional initial points in 
-            d-dimensional Euclidean space.
-    
-        data: (n,d)-array
-            The Euclidean coordinates of n directional random sample points in 
-            d-dimensional Euclidean space.
-       
-        h: float
-            The bandwidth parameter. (Default: h=None. Then a rule of thumb for 
-            directional KDEs with the von Mises kernel in Garcia-Portugues (2013)
-            is applied.)
-        
-        eps: float
-            The precision parameter for stopping the mean shift iteration.
-            (Default: eps=1e-7)
-        
-        max_iter: int
-            The maximum number of iterations for the mean shift iteration.
-            (Default: max_iter=1000)
+        b: float
+            Bandwidth parameter for the linear component. (Default: h=None. 
+            Then the Silverman's rule of thumb is applied. See Chen et al.(2016) 
+            for details.)
             
-        wt: (n,)-array
-            The weights of kernel density contributions for n directional random 
-            sample points. (Default: wt=None, that is, each data point has the 
-            weight "1/n".)
+        q: int
+            Intrinsic data dimension of directional components. (Default: q=2.)
             
-        diff_method: str ('all'/'mean')
-            The method of computing the differences between two consecutive sets
-            of iteration points when they are compared with the precision 
-            parameter to stop the algorithm. (When diff_method='all', all the 
-            differences between two consecutive sets of iteration points need 
-            to be smaller than 'eps' for terminating the algorithm. When 
-            diff_method='mean', only the mean difference is compared with 'eps'
-            and stop the algorithm. Default: diff_method='all'.)
-    
-    Return
-    ----------
-        MS_path: (N,d,T)-array
-            The whole iterative trajectory of every initial point yielded by 
-            the DMS algorithm.
-    '''
-
-    n = data.shape[0]  ## Number of data points
-    d = data.shape[1]  ## Euclidean dimension of the data
-
-    ## Rule of thumb for directional KDE
-    if h is None:
-        R_bar = np.sqrt(sum(np.mean(data, axis=0) ** 2))
-        ## An approximation to kappa (Banerjee 2005 & Sra, 2011)
-        kap_hat = R_bar * (d - R_bar ** 2) / (1 - R_bar ** 2)
-        if d == 3:
-            h = (8*np.sinh(kap_hat)**2/(n*kap_hat * \
-                 ((1+4*kap_hat**2)*np.sinh(2*kap_hat) - \
-                  2*kap_hat*np.cosh(2*kap_hat))))**(1/6)
-        else:
-            h = ((4 * np.sqrt(np.pi) * sp.iv(d / 2 - 1, kap_hat)**2) / \
-                 (n * kap_hat ** (d / 2) * (2 * (d - 1) * sp.iv(d/2, 2*kap_hat) + \
-                                  (d+1) * kap_hat * sp.iv(d/2+1, 2*kap_hat)))) ** (1/(d + 3))
-        print("The current bandwidth is " + str(h) + ".\n")
-
-    MS_path = np.zeros((y_0.shape[0], d, max_iter))
-    MS_path[:,:,0] = y_0
-    if wt is None:
-        wt = np.ones((n,))
-    for t in range(1, max_iter):
-        y_can = np.dot(np.exp((np.dot(MS_old, data.T)-1)/(h**2)), data * wt.reshape(n,1))
-        y_dist = np.sqrt(np.sum(y_can ** 2, axis=1))
-        MS_path[y_dist != 0,:,t] = (y_can / y_dist.reshape(len(y_dist), 1))[y_dist != 0]
-        MS_path[y_dist == 0,:,t] = MS_path[y_dist == 0,:,t-1]
-        if diff_method == 'mean' and \
-        np.mean(1- np.diagonal(np.dot(MS_path[:,:,t], MS_path[:,:,t-1].T))) <=eps:
-            break
-        else:
-            if all(1 - np.diagonal(np.dot(MS_path[:,:,t], MS_path[:,:,t-1].T)) <= eps):
-                break       
-
-    if t < max_iter-1:
-        print('The directional mean shift algorithm converges in ' + str(t) + ' steps!')
-    else:
-        print('The directional mean shift algorithm reaches the maximum number '\
-              'of iterations,' + str(max_iter) + ' and has not yet converged.')
-    return MS_path[:,:,:(t+1)]
-
-
-def DirSCMSLog(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
-               stop_cri='proj_grad'):
-    '''
-    Directional Subspace Constrained Mean Shift algorithm with log density and 
-    von-Mises kernel.
-    
-    Parameters
-    ----------
-        mesh_0: a (m,D)-array
-            The Euclidean coordinates of m directional initial points in the 
-            D-dimensional Euclidean space.
-    
-        data: a (n,D)-array
-            The Euclidean coordinates of n directional data sample points in the 
-            D-dimensional Euclidean space.
-       
-        d: int
-            The order of the density ridge. (Default: d=1.)
-       
-        h: float
-            The bandwidth parameter. (Default: h=None. Then a rule of thumb for 
-            directional KDEs with the von Mises kernel in Garcia-Portugues (2013)
-            is applied.)
+        D: int
+            Data dimension of linear components. (Default: D=1.)
        
         eps: float
             The precision parameter. (Default: eps=1e-7.)
        
         max_iter: int
-            The maximum number of iterations for the directional SCMS algorithm 
-            on each initial point. (Default: max_iter=1000.)
-            
-        wt: (n,)-array
-            The weights of kernel density contributions for n directional random 
-            sample points. (Default: wt=None, that is, each data point has an equal
-            weight "1/n".)
-            
-        stop_cri: string ('proj_grad'/'pts_diff')
-            The indicator of which stopping criteria that will be used to 
-            terminate the SCMS algorithm. (When stop_cri='pts_diff', the errors 
-            between two consecutive iteration points need to be smaller than 
-            'eps' for terminating the algorithm. When stop_cri='proj_grad' or 
-            others, the projected/principal (Riemannian) gradient of the current 
-            point need to be smaller than 'eps' for terminating the algorithm.)
-            (Default: stop_cri='proj_grad'.)
+            The maximum number of iterations for the MS algorithm on each 
+            initial point. (Default: max_iter=1000.)
     
     Return
     ----------
-        SCMS_path: (m,D,T)-array
-            The entire iterative DirSCMS sequence for each initial point.
+        MS_path: (m,q+1+D,T)-array
+            The entire iterative MS sequence for each initial point.
     '''
     
     n = data.shape[0]  ## Number of data points
-    D = data.shape[1]  ## Euclidean dimension of data points
-    ## Rule of thumb for directional KDE
+    D_t = data.shape[1]  ## Total dimension of the data
+    
+    assert q+1+D == D_t, "The dimension of the input data, "+str(D_t)+", should "\
+    "equal to the sum of directional dimension ("+str(q+1)+") in its ambient "\
+    "space and linear dimension ("+str(D)+")."
+    
+    data_Dir = data[:,:(q+1)]
+    data_Lin = data[:,(q+1):(q+1+D)]
+
+    # Rule of thumb for directional component
     if h is None:
-        R_bar = np.sqrt(sum(np.mean(data, axis=0) ** 2))
-        ## An approximation to kappa (Banerjee 2005 & Sra, 2011)
-        kap_hat = R_bar * (D - R_bar ** 2) / (1 - R_bar ** 2)
-        if D == 3:
+        R_bar = np.sqrt(sum(np.mean(data_Dir, axis=0) ** 2))
+        # An approximation to kappa (Banerjee 2005 & Sra, 2011)
+        kap_hat = R_bar * (q + 1 - R_bar ** 2) / (1 - R_bar ** 2)
+        if q == 2:
             h = (8*np.sinh(kap_hat)**2/(n*kap_hat * \
                  ((1+4*kap_hat**2)*np.sinh(2*kap_hat) - 2*kap_hat*np.cosh(2*kap_hat))))**(1/6)
         else:
-            h = ((4 * np.sqrt(np.pi) * sp.iv(D / 2 - 1, kap_hat)**2) / \
-                 (n * kap_hat ** (D / 2) * (2 * (D - 1) * sp.iv(D/2, 2*kap_hat) + \
-                                  (D+1) * kap_hat * sp.iv(D/2+1, 2*kap_hat)))) ** (1/(D + 3))
-        print("The current bandwidth is " + str(h) + ".\n")
+            h = ((4 * np.sqrt(np.pi) * sp.iv((q-1) / 2 , kap_hat)**2) / \
+                 (n * kap_hat ** ((q+1) / 2) * (2 * q * sp.iv((q+1)/2, 2*kap_hat) + \
+                                  (q+2) * kap_hat * sp.iv((q+3)/2, 2*kap_hat)))) ** (1/(q + 4))
+        print("The current bandwidth for directional component is " + str(h) + ".\n")
     
-    SCMS_path = np.zeros((mesh_0.shape[0], D, max_iter))
-    SCMS_path[:,:,0] = mesh_0
+    # Rule of thumb for linear component
+    if b is None:
+        # Apply Silverman's rule of thumb to select the bandwidth parameter 
+        b = (4/(D+2))**(1/(D+4))*(n**(-1/(D+4)))*np.mean(np.std(data_Lin, axis=0))
+        print("The current bandwidth for linear component is "+ str(b) + ".\n")
     
+    MS_path = np.zeros((mesh_0.shape[0], D_t, max_iter))
     ## Create a vector indicating the convergent status of every mesh point
-    conv_sign = np.zeros((mesh_0.shape[0], ))
-    if wt is None:
-        wt = np.ones((n,1))
-    else:
-        wt = n*wt.reshape(n,1)
+    conv_sign = np.zeros((mesh_0.shape[0], )) 
+    MS_path[:,:,0] = mesh_0
     for t in range(1, max_iter):
+        # print(t)
         if all(conv_sign == 1):
-            print('The directional SCMS algorithm converges in ' + str(t-1) + 'steps!')
+            print('The directional-linear MS algorithm converges in '\
+                  + str(t-1) + 'steps!')
             break
         for i in range(mesh_0.shape[0]):
             if conv_sign[i] == 0:
+                x_Dir = MS_path[i,:(q+1),t-1]
+                x_Lin = MS_path[i,(q+1):(q+1+D),t-1]
+                # Kernel weights
+                ker_w_Dir = np.exp((np.dot(data_Dir, x_Dir) - 1)/ h**2)
+                ker_w_Lin = np.exp(-np.sum(((x_Lin - data_Lin)/b)**2, axis=1)/2)
+                # Mean shift updates for directional components
+                x_Dir_new = np.sum(data_Dir * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1), 
+                                   axis=0)
+                x_Dir_new = x_Dir_new / LA.norm(x_Dir_new)
+                MS_path[i,:(q+1),t] = x_Dir_new
+                # Mean shift updates for linear components
+                x_Lin_new = np.sum(data_Lin * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1),
+                                   axis=0) / np.sum(ker_w_Dir * ker_w_Lin)
+                MS_path[i,(q+1):(q+1+D),t] = x_Lin_new
+                if LA.norm(MS_path[i,:,t] - MS_path[i,:,t-1]) <= eps:
+                    conv_sign[i] = 1
+            else:
+                MS_path[i,:,t] = MS_path[i,:,t-1]
+                
+    if t >= max_iter-1:
+        print('The MS algorithm reaches the maximum number of iterations,'\
+               +str(max_iter)+', and has not yet converged.')
+    return MS_path[:,:,:t]
+
+                
+                
+def DirLinMS_CA(mesh_0, data, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000):
+    '''
+    Directional-Linear Mean Shift Algorithm with the von Mises and Gaussian kernels
+    (Componentwise Ascending version)
+    
+    Parameters
+    ----------
+        mesh_0: (m, q+1+D)-array
+            Eulidean coordinates of m directional-linear query points, where 
+            (q+1) is the Euclidean dimension of the directional component (first 
+            (q+1) columns) and D is the dimension of the linear component (last 
+            D columns).
+    
+        data: (n, q+1+D)-array
+            Euclidean coordinates of n directional-linear random sample points, 
+            where (q+1) is the Euclidean dimension of the directional component 
+            (first (q+1) columns) and D is the dimension of the linear component
+            (last D columns).
+       
+        h: float
+            Bandwidth parameter for the directional component. (Default: h=None. 
+            Then a rule of thumb for directional KDEs with the von Mises kernel 
+            in Garcia-Portugues (2013) is applied.)
+            
+        b: float
+            Bandwidth parameter for the linear component. (Default: h=None. 
+            Then the Silverman's rule of thumb is applied. See Chen et al.(2016) 
+            for details.)
+            
+        q: int
+            Intrinsic data dimension of directional components. (Default: q=2.)
+            
+        D: int
+            Data dimension of linear components. (Default: D=1.)
+       
+        eps: float
+            The precision parameter. (Default: eps=1e-7.)
+       
+        max_iter: int
+            The maximum number of iterations for the MS algorithm on each 
+            initial point. (Default: max_iter=1000.)
+    
+    Return
+    ----------
+        MS_path: (m,q+1+D,T)-array
+            The entire iterative MS sequence for each initial point.
+    '''
+    
+    n = data.shape[0]  ## Number of data points
+    D_t = data.shape[1]  ## Total dimension of the data
+    
+    assert q+1+D == D_t, "The dimension of the input data, "+str(D_t)+", should "\
+    "equal to the sum of directional dimension ("+str(q+1)+") in its ambient "\
+    "space and linear dimension ("+str(D)+")."
+    
+    data_Dir = data[:,:(q+1)]
+    data_Lin = data[:,(q+1):(q+1+D)]
+
+    # Rule of thumb for directional component
+    if h is None:
+        R_bar = np.sqrt(sum(np.mean(data_Dir, axis=0) ** 2))
+        ## An approximation to kappa (Banerjee 2005 & Sra, 2011)
+        kap_hat = R_bar * (q + 1 - R_bar ** 2) / (1 - R_bar ** 2)
+        if q == 2:
+            h = (8*np.sinh(kap_hat)**2/(n*kap_hat * \
+                 ((1+4*kap_hat**2)*np.sinh(2*kap_hat) - 2*kap_hat*np.cosh(2*kap_hat))))**(1/6)
+        else:
+            h = ((4 * np.sqrt(np.pi) * sp.iv((q-1) / 2 , kap_hat)**2) / \
+                 (n * kap_hat ** ((q+1) / 2) * (2 * q * sp.iv((q+1)/2, 2*kap_hat) + \
+                                  (q+2) * kap_hat * sp.iv((q+3)/2, 2*kap_hat)))) ** (1/(q + 4))
+        print("The current bandwidth for directional component is " + str(h) + ".\n")
+    
+    # Rule of thumb for linear component
+    if b is None:
+        # Apply Silverman's rule of thumb to select the bandwidth parameter 
+        b = (4/(D+2))**(1/(D+4))*(n**(-1/(D+4)))*np.mean(np.std(data_Lin, axis=0))
+        print("The current bandwidth for linear component is "+ str(b) + ".\n")
+    
+    MS_path = np.zeros((mesh_0.shape[0], D_t, max_iter))
+    ## Create a vector indicating the convergent status of every mesh point
+    conv_sign = np.zeros((mesh_0.shape[0], )) 
+    MS_path[:,:,0] = mesh_0
+    for t in range(1, max_iter):
+        # print(t)
+        if all(conv_sign == 1):
+            print('The directional-linear MS algorithm converges in '\
+                  + str(t-1) + ' steps!')
+            break
+        for i in range(mesh_0.shape[0]):
+            if conv_sign[i] == 0:
+                x_Dir = MS_path[i,:(q+1),t-1]
+                x_Lin = MS_path[i,(q+1):(q+1+D),t-1]
+                # Kernel weights
+                ker_w_Dir = np.exp((np.dot(data_Dir, x_Dir) - 1)/ h**2)
+                ker_w_Lin = np.exp(-np.sum(((x_Lin - data_Lin)/b)**2, axis=1)/2)
+                # Mean shift updates for directional components
+                x_Dir_new = np.sum(data_Dir * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1), 
+                                   axis=0)
+                x_Dir_new = x_Dir_new / LA.norm(x_Dir_new)
+                MS_path[i,:(q+1),t] = x_Dir_new
+                # Recompute the directional kernel weights
+                ker_w_Dir = np.exp((np.dot(x_Dir_new, data_Dir.T) - 1)/ h**2)
+                # Mean shift updates for linear components
+                x_Lin_new = np.sum(data_Lin * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1),
+                                   axis=0) / np.sum(ker_w_Dir * ker_w_Lin)
+                MS_path[i,(q+1):(q+1+D),t] = x_Lin_new
+                if LA.norm(MS_path[i,:,t] - MS_path[i,:,t-1]) <= eps:
+                    conv_sign[i] = 1
+            else:
+                MS_path[i,:,t] = MS_path[i,:,t-1]
+                
+    if t >= max_iter-1:
+        print('The MS algorithm reaches the maximum number of iterations,'\
+               +str(max_iter)+', and has not yet converged.')
+    return MS_path[:,:,:t]
+
+
+def DirLinSCMS(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000):
+    '''
+    Directional-linear Subspace Constrained Mean Shift Algorithm with the 
+    von Mises and Gaussian kernels (Our proposed version, converging to DirLin 
+    ridges under the correct (Riemannian) gradient of DirLin KDE).
+    
+    Parameters
+    ----------
+        mesh_0: (m, q+1+D)-array
+            Eulidean coordinates of m directional-linear query points, where 
+            (q+1) is the Euclidean dimension of the directional component (first 
+            (q+1) columns) and D is the dimension of the linear component (last 
+            D columns).
+    
+        data: (n, q+1+D)-array
+            Euclidean coordinates of n directional-linear random sample points, 
+            where (q+1) is the Euclidean dimension of the directional component 
+            (first (q+1) columns) and D is the dimension of the linear component
+            (last D columns).
+            
+        d: int
+            The order of the density ridge. (Default: d=1.)
+       
+        h: float
+            Bandwidth parameter for the directional component. (Default: h=None. 
+            Then a rule of thumb for directional KDEs with the von Mises kernel 
+            in Garcia-Portugues (2013) is applied.)
+            
+        b: float
+            Bandwidth parameter for the linear component. (Default: h=None. 
+            Then the Silverman's rule of thumb is applied. See Chen et al.(2016) 
+            for details.)
+            
+        q: int
+            Intrinsic data dimension of directional components. (Default: q=2.)
+            
+        D: int
+            Data dimension of linear components. (Default: D=1.)
+       
+        eps: float
+            The precision parameter. (Default: eps=1e-7.)
+       
+        max_iter: int
+            The maximum number of iterations for the MS algorithm on each 
+            initial point. (Default: max_iter=1000.)
+            
+    Returns
+    ----------
+        SCMS_path: (m,q+1+D,T)-array
+            The entire iterative DirLinSCMS sequence for each initial point.
+            
+        conv_sign: (m, )-array
+            A array with 0 or 1 values indicating the convergence of each initial
+            point.
+    
+    '''
+    
+    n = data.shape[0]  ## Number of data points
+    D_t = data.shape[1]  ## Total dimension of the data
+    
+    assert q+1+D == D_t, "The dimension of the input data, "+str(D_t)+", should "\
+    "equal to the sum of directional dimension ("+str(q+1)+") in its ambient "\
+    "space and linear dimension ("+str(D)+")."
+    
+    data_Dir = data[:,:(q+1)]
+    data_Lin = data[:,(q+1):(q+1+D)]
+
+    # Rule of thumb for directional component
+    if h is None:
+        R_bar = np.sqrt(sum(np.mean(data_Dir, axis=0) ** 2))
+        ## An approximation to kappa (Banerjee 2005 & Sra, 2011)
+        kap_hat = R_bar * (q + 1 - R_bar ** 2) / (1 - R_bar ** 2)
+        if q == 2:
+            h = (8*np.sinh(kap_hat)**2/(n*kap_hat * \
+                 ((1+4*kap_hat**2)*np.sinh(2*kap_hat) - 2*kap_hat*np.cosh(2*kap_hat))))**(1/6)
+        else:
+            h = ((4 * np.sqrt(np.pi) * sp.iv((q-1) / 2 , kap_hat)**2) / \
+                 (n * kap_hat ** ((q+1) / 2) * (2 * q * sp.iv((q+1)/2, 2*kap_hat) + \
+                                  (q+2) * kap_hat * sp.iv((q+3)/2, 2*kap_hat)))) ** (1/(q + 4))
+    print("The current bandwidth for directional component is " + str(h) + ".\n")
+    
+    # Rule of thumb for linear component
+    if b is None:
+        # Apply Silverman's rule of thumb to select the bandwidth parameter 
+        b = (4/(D+2))**(1/(D+4))*(n**(-1/(D+4)))*np.mean(np.std(data_Lin, axis=0))
+    print("The current bandwidth for linear component is "+ str(b) + ".\n")
+    
+    SCMS_path = np.zeros((mesh_0.shape[0], D_t, max_iter))
+    SCMS_path[:,:,0] = mesh_0
+    ## Create a vector indicating the convergent status of every mesh point
+    conv_sign = np.zeros((mesh_0.shape[0], ))
+    
+    for t in range(1, max_iter):
+        if all(conv_sign > 0):
+            print('The directional-linear SCMS algorithm converges in '\
+                  + str(t-1) + ' steps!')
+            break
+        for i in range(mesh_0.shape[0]):
+            if conv_sign[i] == 0:
+                x_Dir = SCMS_path[i,:(q+1),t-1]
+                x_Lin = SCMS_path[i,(q+1):(q+1+D),t-1]
                 x_pts = SCMS_path[i,:,t-1]
-                x_pts = x_pts.reshape(len(x_pts), 1)
-                ## Compute the directional KDE up to a constant
-                den_prop = np.sum(wt*np.exp((np.dot(data, x_pts)-1)/(h**2)))
-                ## Compute the total gradient of the log density
-                vtot_Log_grad = np.sum(wt*data*np.exp((np.dot(data, x_pts)-1)/(h**2)), axis=0) \
-                                / ((h**2)*den_prop)
-                ## Compute the Hessian of the log density 
-                Log_Hess = np.dot(data.T, wt*data*np.exp((np.dot(data, x_pts)-1)/(h**2)))/((h**4)*den_prop) \
-                           - np.dot(vtot_Log_grad.reshape(D,1), vtot_Log_grad.reshape(1,D)) \
-                           - np.diag(np.sum(np.dot(wt*data, x_pts) * np.exp((np.dot(data, x_pts)-1)/(h**2))) \
-                                     * np.ones(D,))/((h**2)*den_prop)
-                proj_mat = np.diag(np.ones(D,)) - np.dot(x_pts, x_pts.T)
-                Log_Hess = np.dot(np.dot(proj_mat, Log_Hess), proj_mat)
-                w, v = LA.eig(Log_Hess)
-                ## Obtain the eigenpairs inside the tangent space
-                tang_eig_v = v[:, (abs(np.dot(x_pts.T, v)) < 1e-8)[0,:]]
-                tang_eig_w = w[(abs(np.dot(x_pts.T, v)) < 1e-8)[0,:]]
-                V_d = tang_eig_v[:, np.argsort(tang_eig_w)[:(x_pts.shape[0]-1-d)]]
-                ## Iterative vector for the directional mean shift algorithm
-                ms_v = vtot_Log_grad / LA.norm(vtot_Log_grad)
-                ## Subspace constrained gradient and mean shift vector
-                SCMS_grad = np.dot(V_d, np.dot(V_d.T, vtot_Log_grad))
+                # Kernel weights
+                ker_w_Dir = np.exp((np.dot(data_Dir, x_Dir) - 1)/ h**2)
+                ker_w_Lin = np.exp(-np.sum(((x_Lin - data_Lin)/b)**2, axis=1)/2)
+                # Compute the Hessian matrix
+                ## Hessian in the directional component: (q+1)*(q+1)
+                Hess_Dir = np.dot(data_Dir.T, data_Dir * ker_w_Dir.reshape(n,1) \
+                                  * ker_w_Lin.reshape(n,1))/(h**4) \
+                          - np.eye(q+1) * np.sum(np.dot(data_Dir * ker_w_Dir.reshape(n,1) \
+                                                        * ker_w_Lin.reshape(n,1), x_Dir))/(h**2)
+                x_Dir = x_Dir.reshape(q+1, 1)
+                proj_mat = np.eye(q+1) - np.dot(x_Dir, x_Dir.T)
+                Hess_Dir = np.dot(np.dot(proj_mat, Hess_Dir), proj_mat)
+                ## Hessian in the linear component: D*D
+                Hess_Lin = np.dot((x_Lin - data_Lin).T, (x_Lin - data_Lin) \
+                                  * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1))/(b**4)\
+                          - np.eye(D) * np.sum(ker_w_Dir.reshape(n,1) \
+                                               * ker_w_Lin.reshape(n,1))/(b**2)
+                ## Hessian in the off-diagonal part: (q+1)*D
+                x_Dir = x_Dir.reshape(q+1, )
+                Hess_Off = np.dot(proj_mat, 
+                                  np.dot(data_Dir.T, 
+                                         (data_Lin - x_Lin) * ker_w_Dir.reshape(n,1) \
+                                             * ker_w_Lin.reshape(n,1))/((b**2)*(h**2)))
+                ## Concatenate to obtain the final Hessian
+                Hess = np.zeros((q+1+D, q+1+D))
+                Hess[:(q+1), :(q+1)] = Hess_Dir
+                Hess[:(q+1), (q+1):(q+1+D)] = Hess_Off
+                Hess[(q+1):(q+1+D), :(q+1)] = Hess_Off.T
+                Hess[(q+1):(q+1+D), (q+1):(q+1+D)] = Hess_Lin
+                # Spectral decomposition
+                w, v = LA.eig(Hess)
+                x_eig = np.concatenate([x_Dir.reshape(q+1, 1), 
+                                        np.zeros((D,1))], axis=0)
+                # Obtain the eigenpairs within the tangent space
+                tang_eig_v = v[:, (abs(np.dot(x_eig.T, v)) < 1e-8)[0,:]]
+                tang_eig_w = w[(abs(np.dot(x_eig.T, v)) < 1e-8)[0,:]]
+                V_d = tang_eig_v[:, np.argsort(tang_eig_w)[:(q+D-d)]]
+                # Compute the total gradient
+                tot_grad_Dir = np.sum(data_Dir * ker_w_Dir.reshape(n,1) \
+                                      * ker_w_Lin.reshape(n,1), axis=0)/(h**2)
+                tot_grad_Lin = np.sum((data_Lin - x_Lin) * ker_w_Dir.reshape(n,1) \
+                                      * ker_w_Lin.reshape(n,1), axis=0)/(b**2)
+                tot_grad = np.concatenate([tot_grad_Dir.reshape(q+1, 1), 
+                                           tot_grad_Lin.reshape(D, 1)], axis=0)
+                tot_grad_skew = np.concatenate([tot_grad_Dir.reshape(q+1, 1)*(h**2), 
+                                                tot_grad_Lin.reshape(D, 1)*(b**2)], axis=0)
+                # Mean shift vector in directional and linear components
+                # ms_Dir = tot_grad_Dir / LA.norm(tot_grad_Dir)
+                ms_Dir = (np.sum(data_Dir * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1), 
+                                 axis=0) / np.sum(ker_w_Dir * ker_w_Lin)) * np.min([b/h, 1/(h**2)])
+                ms_Lin = (np.sum(data_Lin * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1),
+                                axis=0) / np.sum(ker_w_Dir * ker_w_Lin) - x_Lin) * np.min([h/b, 1/(b**2)])
+                ms_v = np.concatenate([ms_Dir.reshape(q+1, 1),
+                                       ms_Lin.reshape(D, 1)], axis=0)
+                # Subspace constrained gradient and mean shift vector
+                SCMS_grad = np.dot(V_d, np.dot(V_d.T, tot_grad))
+                SCMS_grad_skew = np.dot(V_d, np.dot(V_d.T, tot_grad_skew))
                 SCMS_v = np.dot(V_d, np.dot(V_d.T, ms_v))
                 ## SCMS update
-                x_new = SCMS_v + x_pts.reshape(x_pts.shape[0], )
-                x_new = x_new / LA.norm(x_new)
+                x_new = SCMS_v + x_pts.reshape(q+1+D, 1)
+                # x_new = eta*SCMS_grad + x_pts.reshape(q+1+D, 1)
+                x_new = x_new.reshape(q+1+D, )
+                x_new[:(q+1)] = x_new[:(q+1)] / LA.norm(x_new[:(q+1)])
                 if LA.norm(SCMS_grad) < eps:
+                # if LA.norm(x_new - x_pts) < eps:
                     conv_sign[i] = 1
                 SCMS_path[i,:,t] = x_new
             else:
                 SCMS_path[i,:,t] = SCMS_path[i,:,t-1]
         # print(t)
-    
     if t >= max_iter-1:
-        print('The directional SCMS algorithm reaches the maximum number of '\
-              'iterations,'+str(max_iter)+', and has not yet converged.')
-    return SCMS_path[:,:,:t]
+        print('The directional-linear SCMS algorithm reaches the maximum number of '\
+               'iterations,'+str(max_iter)+', and has not yet converged.')
+    return SCMS_path[:,:,:t], conv_sign
 
 
-def DirSCMS(mesh_0, data, d=1, h=None, eps=1e-7, max_iter=1000, wt=None,
-            stop_cri='proj_grad'):
+def DirLinSCMSLog(mesh_0, data, d=1, h=None, b=None, q=2, D=1, eps=1e-7, max_iter=1000):
     '''
-    Directional Subspace Constrained Mean Shift Algorithm with the von-Mises 
-    kernel. 
+    Directional-linear Subspace Constrained Mean Shift Algorithm under the 
+    log-density with the von Mises and Gaussian kernels (Our proposed version, 
+    converging to DirLin ridges under the correct (Riemannian) gradient of 
+    DirLin KDE).
     
     Parameters
     ----------
-        mesh_0: a (m,D)-array
-            The Euclidean coordinates of m directional initial points in the 
-            D-dimensional Euclidean space.
+        mesh_0: (m, q+1+D)-array
+            Eulidean coordinates of m directional-linear query points, where 
+            (q+1) is the Euclidean dimension of the directional component (first 
+            (q+1) columns) and D is the dimension of the linear component (last 
+            D columns).
     
-        data: a (n,D)-array
-            The Euclidean coordinates of n directional data sample points in the 
-            D-dimensional Euclidean space.
-       
+        data: (n, q+1+D)-array
+            Euclidean coordinates of n directional-linear random sample points, 
+            where (q+1) is the Euclidean dimension of the directional component 
+            (first (q+1) columns) and D is the dimension of the linear component
+            (last D columns).
+            
         d: int
             The order of the density ridge. (Default: d=1.)
        
         h: float
-            The bandwidth parameter. (Default: h=None. Then a rule of thumb for 
-            directional KDEs with the von Mises kernel in Garcia-Portugues (2013)
-            is applied.)
+            Bandwidth parameter for the directional component. (Default: h=None. 
+            Then a rule of thumb for directional KDEs with the von Mises kernel 
+            in Garcia-Portugues (2013) is applied.)
+            
+        b: float
+            Bandwidth parameter for the linear component. (Default: h=None. 
+            Then the Silverman's rule of thumb is applied. See Chen et al.(2016) 
+            for details.)
+            
+        q: int
+            Intrinsic data dimension of directional components. (Default: q=2.)
+            
+        D: int
+            Data dimension of linear components. (Default: D=1.)
        
         eps: float
             The precision parameter. (Default: eps=1e-7.)
        
         max_iter: int
-            The maximum number of iterations for the directional SCMS algorithm 
-            on each initial point. (Default: max_iter=1000.)
+            The maximum number of iterations for the MS algorithm on each 
+            initial point. (Default: max_iter=1000.)
             
-        wt: (n,)-array
-            The weights of kernel density contributions for n directional random 
-            sample points. (Default: wt=None, that is, each data point has an equal
-            weight "1/n".)
-            
-        stop_cri: string ('proj_grad'/'pts_diff')
-            The indicator of which stopping criteria that will be used to 
-            terminate the SCMS algorithm. (When stop_cri='pts_diff', the errors 
-            between two consecutive iteration points need to be smaller than 
-            'eps' for terminating the algorithm. When stop_cri='proj_grad' or 
-            others, the projected/principal (Riemannian) gradient of the current 
-            point need to be smaller than 'eps' for terminating the algorithm.)
-            (Default: stop_cri='proj_grad'.)
-    
-    Return
+    Returns
     ----------
-        SCMS_path: (m,D,T)-array
-            The entire iterative DirSCMS sequence for each initial point.
+        SCMS_path: (m,q+1+D,T)-array
+            The entire iterative DirLinSCMS sequence for each initial point.
+            
+        conv_sign: (m, )-array
+            A array with 0 or 1 values indicating the convergence of each initial
+            point.
+    
     '''
     
     n = data.shape[0]  ## Number of data points
-    D = data.shape[1]  ## Euclidean dimension of data points
-    ## Rule of thumb for directional KDE
+    D_t = data.shape[1]  ## Total dimension of the data
+    
+    assert q+1+D == D_t, "The dimension of the input data, "+str(D_t)+", should "\
+    "equal to the sum of directional dimension ("+str(q+1)+") in its ambient "\
+    "space and linear dimension ("+str(D)+")."
+    
+    data_Dir = data[:,:(q+1)]
+    data_Lin = data[:,(q+1):(q+1+D)]
+
+    # Rule of thumb for directional component
     if h is None:
-        R_bar = np.sqrt(sum(np.mean(data, axis=0) ** 2))
+        R_bar = np.sqrt(sum(np.mean(data_Dir, axis=0) ** 2))
         ## An approximation to kappa (Banerjee 2005 & Sra, 2011)
-        kap_hat = R_bar * (D - R_bar ** 2) / (1 - R_bar ** 2)
-        if D == 3:
+        kap_hat = R_bar * (q + 1 - R_bar ** 2) / (1 - R_bar ** 2)
+        if q == 2:
             h = (8*np.sinh(kap_hat)**2/(n*kap_hat * \
                  ((1+4*kap_hat**2)*np.sinh(2*kap_hat) - 2*kap_hat*np.cosh(2*kap_hat))))**(1/6)
         else:
-            h = ((4 * np.sqrt(np.pi) * sp.iv(D / 2 - 1, kap_hat)**2) / \
-                 (n * kap_hat ** (D / 2) * (2 * (D - 1) * sp.iv(D/2, 2*kap_hat) + \
-                                  (D+1) * kap_hat * sp.iv(D/2+1, 2*kap_hat)))) ** (1/(D + 3))
-        print("The current bandwidth is " + str(h) + ".\n")
+            h = ((4 * np.sqrt(np.pi) * sp.iv((q-1) / 2 , kap_hat)**2) / \
+                 (n * kap_hat ** ((q+1) / 2) * (2 * q * sp.iv((q+1)/2, 2*kap_hat) + \
+                                  (q+2) * kap_hat * sp.iv((q+3)/2, 2*kap_hat)))) ** (1/(q + 4))
+        print("The current bandwidth for directional component is " + str(h) + ".\n")
     
-    SCMS_path = np.zeros((mesh_0.shape[0], D, max_iter))
+    # Rule of thumb for linear component
+    if b is None:
+        # Apply Silverman's rule of thumb to select the bandwidth parameter 
+        # (Only works for Gaussian kernel)
+        b = (4/(D+2))**(1/(D+4))*(n**(-1/(D+4)))*np.mean(np.std(data_Lin, axis=0))
+        print("The current bandwidth for linear component is "+ str(b) + ".\n")
+    
+    SCMS_path = np.zeros((mesh_0.shape[0], D_t, max_iter))
     SCMS_path[:,:,0] = mesh_0
-    
     ## Create a vector indicating the convergent status of every mesh point
-    conv_sign = np.zeros((mesh_0.shape[0], ))  
-    if wt is None:
-        wt = np.ones((n,1))
-    else:
-        wt = n*wt.reshape(n,1)
+    conv_sign = np.zeros((mesh_0.shape[0], ))
+    
     for t in range(1, max_iter):
-        if all(conv_sign == 1):
-            print('The directional SCMS algorithm converges in ' + str(t-1) + 'steps!')
+        if all(conv_sign > 0):
+            print('The directional-linear SCMS algorithm converges in '\
+                  + str(t-1) + ' steps!')
             break
         for i in range(mesh_0.shape[0]):
             if conv_sign[i] == 0:
-                x_pts = SCMS_path[i,:,t-1].reshape(D, 1)
-                ## Compute the Hessian matrix
-                Hess = np.dot(data.T, wt*data*np.exp((np.dot(data, x_pts)-1)/(h**2)))/(h**2) \
-                       - np.diag(np.sum(np.dot(wt*data, x_pts) \
-                                 * np.exp((np.dot(data, x_pts)-1)/(h**2))) * np.ones(len(x_pts),))
-                x_pts = x_pts.reshape(len(x_pts), 1)
-                proj_mat = np.diag(np.ones(x_pts.shape[0],)) - np.dot(x_pts, x_pts.T)
-                Hess = np.dot(np.dot(proj_mat, Hess), proj_mat)
-                w, v = LA.eig(Hess)
-                ## Obtain the eigenpairs within the tangent space
-                tang_eig_v = v[:, (abs(np.dot(x_pts.T, v)) < 1e-8)[0,:]]
-                tang_eig_w = w[(abs(np.dot(x_pts.T, v)) < 1e-8)[0,:]]
-                V_d = tang_eig_v[:, np.argsort(tang_eig_w)[:(x_pts.shape[0]-1-d)]]
-                vtot_grad = np.sum(wt*data*np.exp((np.dot(data, x_pts)-1)/(h**2)), axis=0)
-                ## Iterative vector for the directional mean shift algorithm
-                ms_v = vtot_grad / LA.norm(vtot_grad)
-                ## Subspace constrained gradient and mean shift vector
-                SCMS_grad = np.dot(V_d, np.dot(V_d.T, vtot_grad))
-                SCMS_v = np.dot(V_d, np.dot(V_d.T, ms_v))
-                ## SCMS update
-                x_new = SCMS_v + x_pts.reshape(x_pts.shape[0], )
-                x_new = x_new / LA.norm(x_new)
-                ## Stopping criteria
-                if stop_cri == 'pts_diff':
-                    if LA.norm(SCMS_v) < eps:
-                        conv_sign[i] = 1
-                else: 
+                x_Dir = SCMS_path[i,:(q+1),t-1]
+                x_Lin = SCMS_path[i,(q+1):(q+1+D),t-1]
+                x_pts = SCMS_path[i,:,t-1]
+                # Kernel weights
+                ker_w_Dir = np.exp((np.dot(data_Dir, x_Dir) - 1)/ h**2)
+                ker_w_Lin = np.exp(-np.sum(((x_Lin - data_Lin)/b)**2, axis=1)/2)
+                # Compute the directional-linear KDE up to a constant
+                den_prop = np.sum(ker_w_Dir * ker_w_Lin)
+                if den_prop == 0:
+                    # Set those points with zero density values to NaN
+                    nan_arr = np.zeros_like(x_pts)
+                    nan_arr[:] = np.nan
+                    conv_sign[i] = 3
+                    x_new = nan_arr
+                else:
+                    # Compute the total gradient of the log density
+                    tot_grad_Log_Dir = np.sum(data_Dir * ker_w_Dir.reshape(n,1) \
+                                         * ker_w_Lin.reshape(n,1), axis=0)/((h**2)*den_prop)
+                    tot_grad_Log_Lin = np.sum((data_Lin - x_Lin) * ker_w_Dir.reshape(n,1) \
+                                         * ker_w_Lin.reshape(n,1), axis=0)/((b**2)*den_prop)
+                    tot_grad_Log = np.concatenate([tot_grad_Log_Dir.reshape(q+1, 1), 
+                                               tot_grad_Log_Lin.reshape(D, 1)], axis=0)
+                    tot_grad_Log_skew = np.concatenate([tot_grad_Log_Dir.reshape(q+1, 1)*(h**2), 
+                                                    tot_grad_Log_Lin.reshape(D, 1)*(b**2)], axis=0)
+                    # Compute the Hessian matrix of the log density
+                    ## Hessian in the directional component: (q+1)*(q+1)
+                    Log_Hess_Dir = np.dot(data_Dir.T, data_Dir * ker_w_Dir.reshape(n,1) \
+                                     * ker_w_Lin.reshape(n,1))/((h**4)*den_prop) \
+                        - np.dot(tot_grad_Log_Dir.reshape(q+1, 1), tot_grad_Log_Dir.reshape(1, q+1)) \
+                        - np.eye(q+1) * np.sum(np.dot(data_Dir * ker_w_Dir.reshape(n,1) \
+                                                  * ker_w_Lin.reshape(n,1), x_Dir))/((h**2)*den_prop)
+                    x_Dir = x_Dir.reshape(q+1, 1)
+                    proj_mat = np.eye(q+1) - np.dot(x_Dir, x_Dir.T)
+                    Log_Hess_Dir = np.dot(np.dot(proj_mat, Log_Hess_Dir), proj_mat)
+                    ## Hessian in the linear component: D*D
+                    Log_Hess_Lin = np.dot((x_Lin - data_Lin).T, (x_Lin - data_Lin) \
+                              * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1))/((b**4)*den_prop) \
+                              - np.eye(D) * np.sum(ker_w_Dir.reshape(n,1) \
+                                               * ker_w_Lin.reshape(n,1))/((b**2)*den_prop) \
+                              - np.dot(tot_grad_Log_Lin.reshape(D,1), tot_grad_Log_Lin.reshape(1,D))
+                    ## Hessian in the off-diagonal part: (q+1)*D
+                    x_Dir = x_Dir.reshape(q+1, )
+                    Log_Hess_Off = np.dot(data_Dir.T, (data_Lin - x_Lin) * ker_w_Dir.reshape(n,1) \
+                                    * ker_w_Lin.reshape(n,1))/((b**2)*(h**2)*den_prop) \
+                             - np.dot(tot_grad_Log_Dir.reshape(q+1, 1), tot_grad_Log_Lin.reshape(1,D))
+                    Log_Hess_Off = np.dot(proj_mat, Log_Hess_Off)
+                    ## Concatenate to obtain the final Hessian
+                    Log_Hess = np.zeros((q+1+D, q+1+D))
+                    Log_Hess[:(q+1), :(q+1)] = Log_Hess_Dir
+                    Log_Hess[:(q+1), (q+1):(q+1+D)] = Log_Hess_Off
+                    Log_Hess[(q+1):(q+1+D), :(q+1)] = Log_Hess_Off.T
+                    Log_Hess[(q+1):(q+1+D), (q+1):(q+1+D)] = Log_Hess_Lin
+                    # Spectral decomposition
+                    w, v = LA.eig(Log_Hess)
+                    x_eig = np.concatenate([x_Dir.reshape(q+1, 1), 
+                                            np.zeros((D,1))], axis=0)
+                    # Obtain the eigenpairs within the tangent space
+                    tang_eig_v = v[:, (abs(np.dot(x_eig.T, v)) < 1e-8)[0,:]]
+                    tang_eig_w = w[(abs(np.dot(x_eig.T, v)) < 1e-8)[0,:]]
+                    V_d = tang_eig_v[:, np.argsort(tang_eig_w)[:(q+D-d)]]
+                    # Mean shift vector in directional and linear components
+                    # ms_Dir = tot_grad_Log_Dir / LA.norm(tot_grad_Log_Dir)
+                    ms_Dir = (np.sum(data_Dir * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1), 
+                                axis=0) / np.sum(ker_w_Dir * ker_w_Lin)) * np.min([b/h, 1/(h**2)])
+                    ms_Lin = (np.sum(data_Lin * ker_w_Dir.reshape(n,1) * ker_w_Lin.reshape(n,1),
+                                axis=0) / np.sum(ker_w_Dir * ker_w_Lin) - x_Lin) * np.min([h/b, 1/(b**2)])
+                    ms_v = np.concatenate([ms_Dir.reshape(q+1, 1),
+                                           ms_Lin.reshape(D, 1)], axis=0)
+                    # Subspace constrained gradient and mean shift vector
+                    SCMS_grad = np.dot(V_d, np.dot(V_d.T, tot_grad_Log))
+                    SCMS_grad_skew = np.dot(V_d, np.dot(V_d.T, tot_grad_Log_skew))
+                    SCMS_v = np.dot(V_d, np.dot(V_d.T, ms_v))
+                    ## SCMS update
+                    x_new = SCMS_v + x_pts.reshape(q+1+D, 1)
+                    # x_new = eta*SCMS_grad + x_pts.reshape(q+1+D, 1)
+                    x_new = x_new.reshape(q+1+D, )
+                    x_new[:(q+1)] = x_new[:(q+1)] / LA.norm(x_new[:(q+1)])
                     if LA.norm(SCMS_grad) < eps:
+                    # if LA.norm(x_new - x_pts) < eps:
                         conv_sign[i] = 1
                 SCMS_path[i,:,t] = x_new
             else:
                 SCMS_path[i,:,t] = SCMS_path[i,:,t-1]
         # print(t)
-    
     if t >= max_iter-1:
-        print('The directional SCMS algorithm reaches the maximum number of '\
+        print('The directional-linear SCMS algorithm reaches the maximum number of '\
                'iterations,'+str(max_iter)+', and has not yet converged.')
-    return SCMS_path[:,:,:t]
+    # return SCMS_path[conv_sign != 0,:,:t]
+    return SCMS_path[:,:,:t], conv_sign
