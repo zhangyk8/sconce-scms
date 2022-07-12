@@ -48,14 +48,19 @@ where :math:`\mathtt{grad} f(\mathbf{x})` is the Riemannian gradient of :math:`f
 
     \mathcal{H} f(\mathbf{x}) = (\mathbf{I}_{q+1} -\mathbf{x}\mathbf{x}^T) \left[\nabla\nabla f(\mathbf{x}) - \nabla f(\mathbf{x})^T \mathbf{x} \cdot \mathbf{I}_{q+1} \right] (\mathbf{I}_{q+1} -\mathbf{x}\mathbf{x}^T).
     
-To identify the directional density ridge :math:`R_d(f)` from :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\} \subset \mathbb{S}^q`, we first estimate the directional density :math:`f` via the directional KDE ([6]_, [7]_) as:
+In the application of modeling cosmic filaments on the celestial sphere, one can take :math:`q=2` and :math:`d=1` in the above definition. To identify the directional density ridge :math:`R_d(f)` from :math:`\{\mathbf{X}_1,...,\mathbf{X}_n\} \subset \mathbb{S}^q`, we first estimate the directional density :math:`f` via the directional KDE ([6]_, [7]_) as:
 
 .. math::
 
     \widehat{f}_b(\mathbf{x}) = \frac{C_L(b)}{n} \sum_{i=1}^n L\left(\frac{1-\mathbf{x}^T\mathbf{X}_i}{b^2} \right),
     
-where :math:`L(\cdot)` is the directional kernel (e.g., the von Mises kernel :math:`L(r)=e^{-r}`), :math:`b` is the smoothing bandwidth parameter, and :math:`C_L(b)` is the normalizing constant ensuring that :math:`\widehat{f}_b` is a valid density on :math:`\mathbb{S}^q`. 
+where :math:`L(\cdot)` is the directional kernel (e.g., the von Mises kernel :math:`L(r)=e^{-r}`), :math:`b` is the smoothing bandwidth parameter, and :math:`C_L(b)` is the normalizing constant ensuring that :math:`\widehat{f}_b` is a valid density on :math:`\mathbb{S}^q`. Again, the estimated density ridge :math:`R_d(\widehat{f}_b)` based on the directional KDE :math:`\widehat{f}_b` is a statistically consistent estimator of the theoretical density ridge :math:`R_d(f)` and can be practically identified by our *DirSCMS* algorithm with its iterative formula as:
 
+.. math::
+
+    \mathbf{x}^{(t+1)} \gets \mathbf{x}^{(t)} - \widehat{V}_D(\mathbf{x}^{(t)}) \widehat{V}_D(\mathbf{x}^{(t)})^T \left[\frac{\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right)}{\left\|\sum_{i=1}^n \mathbf{X}_i L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b^2} \right) \right\|} \right]
+
+for :math:`t=0,1,...`, where :math:`\widehat{V}_D(\mathbf{x}) = \left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x}),..., \widehat{\mathbf{v}}_q(\mathbf{x}) \right] \in \mathbb{R}^{(q+1)\times (q-d)}` has its columns as the last :math:`(q-d)` eigenvectors of the estimated Riemannian Hessian :math:`\mathcal{H} \widehat{f}_b(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}`.
 
 Directional-linear SCMS (*DirLinSCMS*) Algorithm on the 3D Light Cone :math:`\mathbb{S}^2\times \mathbb{R}`
 ------------
