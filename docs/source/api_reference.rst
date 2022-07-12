@@ -1,5 +1,5 @@
 API References
-=====
+========
 
 Standard KDE, mean shift, and SCMS algorithms in a flat Euclidean space :math:`\mathbb{R}^d`
 ----------------------------------
@@ -27,3 +27,4 @@ Utilities for SCONCE-SCMS
 
 .. automodule:: sconce.utils
     :members:
+    :show-inheritance:
