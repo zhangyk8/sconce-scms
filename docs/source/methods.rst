@@ -115,9 +115,13 @@ where :math:`L(\cdot)` and :math:`K(\cdot)` are the directional and linear kerne
     
 where :math:`\widehat{V}_{dl}(\mathbf{x},\mathbf{z})=\left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x},\mathbf{z}),..., \widehat{\mathbf{v}}_{q+D}(\mathbf{x},\mathbf{z})\right] \in \mathbb{R}^{(q+1+D)\times (q+D-d)}` has its columns as the last :math:`(q+D-d)` eigenvectors of the estimated Riemannian Hessian :math:`\mathcal{H} \widehat{f}_{dl}(\mathbf{x},\mathbf{z})` within the tangent space of :math:`\mathbb{S}^q\times \mathbb{R}^D` at :math:`(\mathbf{x},\mathbf{z})` and :math:`\mathbf{H}=\mathtt{Diag}\left(\underbrace{\frac{1}{b_1^2},....,\frac{1}{b_1^2}}_{(q+1) \text{ terms}}, \underbrace{\frac{1}{b_2^2},...,\frac{1}{b_2^2}}_{D \text{ terms}} \right) \in \mathbb{R}^{(q+1+D)\times (q+1+D)}` is a diagonal bandwidth matrix.
 
-One may notice that our *DirLinSCMS* algorithm is neither a simple generalization from the standard SCMS and our previously proposed *DirSCMS* algorithms nor a direct combination of them. Instead, our *DirLinSCMS* algorithm exhibits two major differences in its iterative formula. First, it requires an extra bandwidth matrix to scale the mean shift vector 
+One may notice that our *DirLinSCMS* algorithm is neither a simple generalization from the standard SCMS and our previously proposed *DirSCMS* algorithms nor a direct combination of them. Instead, our *DirLinSCMS* algorithm exhibits two major differences in its iterative formula. First, the *DirLinSCMS* algorithm scales the mean shift vector with an extra bandwidth matrix so as to ensure that it follows the correct projected gradient direction at each iterative step. Second, it inevitably requires a step size parameter :math:`\eta` to control its convergence. As a theretically motivated and practically effective guideline, we suggest taking the step size as:
 
+.. math::
+
+    \eta = \min\left\{b_1\cdot b_2, 1\right\},
     
+where the upper bound 1 is set to prevent the algorithm from overshooting the estimated ridge region when the smoothing bandwidth parameters are chosen to be large.
 
 
 
