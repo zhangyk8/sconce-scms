@@ -43,6 +43,7 @@ extensions = [
 # }
 # intersphinx_disabled_domains = ['std']
 
+napoleon_use_ivar = True
 autodoc_mock_imports = ['numpy', 'scipy', 'ray']
 templates_path = ['_templates']
 
