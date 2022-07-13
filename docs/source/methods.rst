@@ -41,7 +41,10 @@ Our *DirSCMS* algorithm [5]_ takes a discrete collection of observations :math:`
 where :math:`\mathtt{grad} f(\mathbf{x})` is the Riemannian gradient of :math:`f` and :math:`V_D(\mathbf{x})=\left[\mathbf{v}_{d+1}(\mathbf{x}),..., \mathbf{v}_q(\mathbf{x})\right] \in \mathbb{R}^{(q+1)\times (q-d)}` consists of the last :math:`(q-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}` associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x}) \geq \cdots \geq \lambda_q(\mathbf{x})`. Notice that :math:`\mathcal{H} f(\mathbf{x})` has :math:`q` orthonormal eigenvectors spanning the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}` and another unit eigenvector :math:`\mathbf{x}` orthogonal to the tangent space. 
 
 .. image:: DirSCMS_step16.png
-  :alt: An illustration of the directional density ridge on :math:`\mathbb{S}^2`
+  :alt: Directional ridge illustration
+  :class: with-shadow float-left
+
+**Figure 1**: An illustration of the directional density ridge on :math:`\mathbb{S}^2`, where the contour lines indicate the estimated density function by directional KDE.
 
 The directional density ridge :math:`R_d(f)` is indeed adaptive to the spherical geometry of :math:`\mathbb{S}^q` because it is defined through the Riemannian gradient and Hessian of the directional density :math:`f` within the tangent space of :math:`\mathbb{S}^q`. To compute these derivative quantities, one can extend the domain of :math:`f` from :math:`\mathbb{S}^q` to its ambient Euclidean space :math:`\mathbb{R}^{q+1}\setminus\{\mathbf{0}\}`. Then, the Riemannian gradient and Hessian on :math:`\mathbb{S}^q` are connected with the total gradient :math:`\nabla f(\mathbf{x})` and Hessian :math:`\mathcal{H} f(\mathbf{x})` in :math:`\mathbb{R}^{q+1}` as:
 
