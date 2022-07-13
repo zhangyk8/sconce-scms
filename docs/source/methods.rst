@@ -80,7 +80,7 @@ in the design of our *DirSCMS* algorithm in pursuit of a faster convergence rate
 Directional-linear SCMS (*DirLinSCMS*) Algorithm on the 3D Light Cone :math:`\mathbb{S}^2\times \mathbb{R}`
 ------------
 
-Our *DirLinSCMS* algorithm [8]_ makes a further generalization of the above *DirSCMS* algorithm and addresses the density ridge estimation problem on a directional-linear product space :math:`\mathbb{S}^q\times \mathbb{R}^D`. We assume that its input data comprise independent and identically distributed (i.i.d.) observations :math:`(\mathbf{X}_i,\mathbf{Z}_i), i=1,...,n` sampled from a directional-linear density :math:`f_{dl}(\mathbf{x},\mathbf{z})`. 
+Our *DirLinSCMS* algorithm [8]_ makes a further generalization of the above *DirSCMS* algorithm and addresses the density ridge estimation problem on a directional-linear product space :math:`\mathbb{S}^q\times \mathbb{R}^D`. We assume that its input data comprise independent and identically distributed (i.i.d.) observations :math:`(\mathbf{X}_i,\mathbf{Z}_i) \in \mathbb{S}^q\times \mathbb{R}^D, i=1,...,n` sampled from a directional-linear density :math:`f_{dl}(\mathbf{x},\mathbf{z})`. 
 
 
 References
