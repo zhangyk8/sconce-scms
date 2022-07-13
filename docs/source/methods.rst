@@ -94,7 +94,7 @@ Analogously, the underlying density :math:`f_{dl}` and its density ridge can be 
 
     \widehat{f}_{dl}(\mathbf{x},\mathbf{z}) = \frac{C_L(b_1)}{nb_2^D} \sum_{i=1}^n L\left(\frac{1-\mathbf{X}_i^T\mathbf{x}}{b_1^2} \right) K\left(\left\| \frac{\mathbf{z}-\mathbf{Z}_i}{b_2} \right\|_2^2 \right),
 
-where :math:`L(\cdot)` and :math:`K(\cdot)` are the directional and linear kernel functions while :math:`b_1,b_2` are the smoothing bandwidth parameters for directional and linear components, respectively. The challenge lies in the formulation of the *DirLinSCMS* algorithm, in that a naive generalization from the mean shift algorithm to its SCMS counterpart as how the standard SCMS and *DirSCMS* methods use will lead to a biased estimate of :math:`R_d(\widehat{f}_{dl})`; see Section 4 in [8]_. Fortunately, under the applications of the von Mises (directional) kernel and Gaussian (linear) kernel, we are able to formulate the correct SCMS iterative formula under the directional-linear data scenario as:
+where :math:`L(\cdot)` and :math:`K(\cdot)` are the directional and linear kernel functions while :math:`b_1,b_2` are the smoothing bandwidth parameters for directional and linear components, respectively. The challenge lies in the formulation of the *DirLinSCMS* algorithm, in that a naive generalization from the mean shift algorithm to its SCMS counterpart as how the standard SCMS and *DirSCMS* methods use will lead to a biased estimate of :math:`R_d(\widehat{f}_{dl})`; see Section 4 in [8]_. Fortunately, under the applications of the von Mises (directional) kernel and Gaussian (linear) kernel, we are able to formulate the correct SCMS iterative formula for :math:`(\mathbf{x}^{(t)},\mathbf{z}^{(t)}) \in \mathbb{S}^q\times \mathbb{R}^D` with :math:`t=0,1,...` as:
 
 .. math::
 
@@ -107,13 +107,15 @@ where :math:`L(\cdot)` and :math:`K(\cdot)` are the directional and linear kerne
 	\mathbf{z}^{(t)}
 	\end{pmatrix}  +\eta \cdot \widehat{V}_{dl}\left(\mathbf{x}^{(t)},\mathbf{z}^{(t)}\right) \widehat{V}_{dl}\left(\mathbf{x}^{(t)},\mathbf{z}^{(t)}\right)^T \mathbf{H}\cdot \begin{pmatrix}
 	\frac{\sum\limits_{i=1}^n \mathbf{X}_i\cdot L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right)  K\left(\left\|\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2} \right\|_2^2 \right) }{\sum\limits_{i=1}^n L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right) K\left(\left\|\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2} \right\|_2^2 \right)} -\mathbf{x}^{(t)}\\ \frac{\sum\limits_{i=1}^n \mathbf{Z}_i \cdot L\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right)   K'\left(\left\|\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2} \right\|_2^2 \right) }{\sum\limits_{i=1}^n L\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right)  K'\left(\left\|\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2} \right\|_2^2 \right)} - \mathbf{z}^{(t)}
-    \end{pmatrix},
+    \end{pmatrix}
 
 .. math::
 
-    \text{ and } \quad \mathbf{x}^{(t+1)} \gets \frac{\mathbf{x}^{(t+1)}}{\left\| \mathbf{x}^{(t+1)} \right\|_2}
+    \text{ and } \quad \mathbf{x}^{(t+1)} \gets \frac{\mathbf{x}^{(t+1)}}{\left\| \mathbf{x}^{(t+1)} \right\|_2},
     
-for :math:`t=0,1,...`, where :math:`\widehat{V}_{dl}(\mathbf{x},\mathbf{z})=\left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x},\mathbf{z}),..., \widehat{\mathbf{v}}_{q+D}(\mathbf{x},\mathbf{z})\right] \in \mathbb{R}^{(q+1+D)\times (q+D-d)}` has its columns as the last :math:`(q+D-d)` eigenvectors of the estimated Riemannian Hessian :math:`\mathcal{H} \widehat{f}_{dl}(\mathbf{x},\mathbf{z})` within the tangent space of :math:`\mathbb{S}^q\times \mathbb{R}^D` at :math:`(\mathbf{x},\mathbf{z})` and :math:`\mathbf{H}=\mathtt{Diag}`
+where :math:`\widehat{V}_{dl}(\mathbf{x},\mathbf{z})=\left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x},\mathbf{z}),..., \widehat{\mathbf{v}}_{q+D}(\mathbf{x},\mathbf{z})\right] \in \mathbb{R}^{(q+1+D)\times (q+D-d)}` has its columns as the last :math:`(q+D-d)` eigenvectors of the estimated Riemannian Hessian :math:`\mathcal{H} \widehat{f}_{dl}(\mathbf{x},\mathbf{z})` within the tangent space of :math:`\mathbb{S}^q\times \mathbb{R}^D` at :math:`(\mathbf{x},\mathbf{z})` and :math:`\mathbf{H}=\mathtt{Diag}\left(\underbrace{\frac{1}{b_1^2},....,\frac{1}{b_1^2}}_{(q+1) \text{ terms}}, \underbrace{\frac{1}{b_2^2},...,\frac{1}{b_2^2}}_{D \text{ terms}} \right) \in \mathbb{R}^{(q+1+D)\times (q+1+D)}` is a diagonal bandwidth matrix.
+
+One may notice that our *DirLinSCMS* algorithm is neither a simple generalization from the standard SCMS and our previously proposed *DirSCMS* algorithms nor a direct combination of them. Instead, our *DirLinSCMS* algorithm exhibits two major differences in its iterative formula. First, it requires an extra bandwidth matrix to scale the mean shift vector 
 
     
 
