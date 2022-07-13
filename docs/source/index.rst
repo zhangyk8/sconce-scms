@@ -26,8 +26,8 @@ More details can be found in :doc:`Methodology <methods>` and the reference pape
    
    installation
    methods
-   api_reference
    Example_SCMS
+   api_reference
    
 
 How to Cite SCONCE-SCMS
