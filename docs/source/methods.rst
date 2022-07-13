@@ -4,11 +4,11 @@ Methodology
 Standard SCMS Algorithm on the Euclidean Space :math:`\mathbb{R}^D`
 ------------
 
-The subspace constrained mean shift (SCMS) algorithm [2]_ is designed to estimate the density ridges, the lower dimensional structures at which the density peak. Given a (smooth) density function :math:`p` supported on :math:`\mathbb{R}^D`, its :math:`d`-dimensional density ridge is defined as
+The subspace constrained mean shift (SCMS) algorithm [2]_ is designed to estimate the density ridges, the lower dimensional structures at which the density peak. Given a (smooth) density function :math:`p` supported on :math:`\mathbb{R}^D`, its :math:`d`-dimensional density ridge is defined as [3]_
 
 .. math::
 
-    R_d(p) = \left\{\mathbf{x} \in \mathbb{R}^D: V_E(\mathbf{x})^T \nabla p(\mathbf{x})=\mathbf{0} \right\},
+    R_d(p) = \left\{\mathbf{x} \in \mathbb{R}^D: V_E(\mathbf{x})^T \nabla p(\mathbf{x})=\mathbf{0}, \lambda_{d+1}(\mathbf{x}) < 0 \right\},
     
 where :math:`\nabla p(\mathbf{x})` is the gradient of :math:`p` and :math:`V_E(\mathbf{x})=\left[\mathbf{v}_{d+1}(\mathbf{x}),..., \mathbf{v}_D(\mathbf{x})\right] \in \mathbb{R}^{D\times (D-d)}` consists of the last :math:`(D-d)` eigenvectors of the Hessian :math:`\nabla\nabla p(\mathbf{x})` associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x}) \geq \cdots \geq \lambda_D(\mathbf{x})`. Under the scenario of cosmic filament detection in the flat Euclidean space :math:`\mathbb{R}^D`, the one-dimensional density ridge :math:`R_1(p)` serve as an ideal choice of the theoretical cosmic filament model.
 
@@ -36,9 +36,9 @@ Our *DirSCMS* algorithm [5]_ takes a discrete collection of observations :math:`
 
 .. math::
 
-    R_d(f) = \left\{\mathbf{x} \in \mathbb{S}^q: V_D(\mathbf{x})^T \mathtt{grad} f(\mathbf{x})=\mathbf{0} \right\},
+    R_d(f) = \left\{\mathbf{x} \in \mathbb{S}^q: V_D(\mathbf{x})^T \mathtt{grad} f(\mathbf{x})=\mathbf{0}, \lambda_{d+1}(\mathbf{x}) < 0 \right\},
     
-where :math:`\mathtt{grad} f(\mathbf{x})` is the Riemannian gradient of :math:`f` and :math:`V_D(\mathbf{x})=\left[\mathbf{v}_{d+1}(\mathbf{x}),..., \mathbf{v}_q(\mathbf{x})\right] \in \mathbb{R}^{(q+1)\times (q-d)}` consists of the last :math:`(q-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}` associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x}) \geq \cdots \geq \lambda_q(\mathbf{x})`. Notice that the main difference here is that the directional density ridge :math:`R_d(f)` is defined through the Riemannian gradient and Hessian of the directional density :math:`f` within the tangent space of :math:`\mathbb{S}^q`. To compute these derivative quantities, one can extend the domain of :math:`f` from :math:`\mathbb{S}^q` to its ambient Euclidean space :math:`\mathbb{R}^{q+1}\setminus\{\mathbf{0}\}`. Then, the Riemannian gradient and Hessian on :math:`\mathbb{S}^q` are connected with the total gradient :math:`\nabla f(\mathbf{x})` and Hessian :math:`\mathcal{H} f(\mathbf{x})` in :math:`\mathbb{R}^{q+1}` as:
+where :math:`\mathtt{grad} f(\mathbf{x})` is the Riemannian gradient of :math:`f` and :math:`V_D(\mathbf{x})=\left[\mathbf{v}_{d+1}(\mathbf{x}),..., \mathbf{v}_q(\mathbf{x})\right] \in \mathbb{R}^{(q+1)\times (q-d)}` consists of the last :math:`(q-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f(\mathbf{x})` within the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}` associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x}) \geq \cdots \geq \lambda_q(\mathbf{x})`. Notice that :math:`\mathcal{H} f(\mathbf{x})` has :math:`q` orthonormal eigenvectors spanning the tangent space of :math:`\mathbb{S}^q` at :math:`\mathbf{x}` and another unit eigenvector :math:`\mathbf{x}` orthogonal to the tangent space. The directional density ridge :math:`R_d(f)` is indeed adaptive to the spherical geometry of :math:`\mathbb{S}^q` because it is defined through the Riemannian gradient and Hessian of the directional density :math:`f` within the tangent space of :math:`\mathbb{S}^q`. To compute these derivative quantities, one can extend the domain of :math:`f` from :math:`\mathbb{S}^q` to its ambient Euclidean space :math:`\mathbb{R}^{q+1}\setminus\{\mathbf{0}\}`. Then, the Riemannian gradient and Hessian on :math:`\mathbb{S}^q` are connected with the total gradient :math:`\nabla f(\mathbf{x})` and Hessian :math:`\mathcal{H} f(\mathbf{x})` in :math:`\mathbb{R}^{q+1}` as:
 
 .. math::
 
@@ -80,7 +80,16 @@ in the design of our *DirSCMS* algorithm in pursuit of a faster convergence rate
 Directional-linear SCMS (*DirLinSCMS*) Algorithm on the 3D Light Cone :math:`\mathbb{S}^2\times \mathbb{R}`
 ------------
 
-Our *DirLinSCMS* algorithm [8]_ makes a further generalization of the above *DirSCMS* algorithm and addresses the density ridge estimation problem on a directional-linear product space :math:`\mathbb{S}^q\times \mathbb{R}^D`. We assume that its input data comprise independent and identically distributed (i.i.d.) observations :math:`(\mathbf{X}_i,\mathbf{Z}_i) \in \mathbb{S}^q\times \mathbb{R}^D, i=1,...,n` sampled from a directional-linear density :math:`f_{dl}(\mathbf{x},\mathbf{z})`. 
+Our *DirLinSCMS* algorithm [8]_ makes a further generalization of the above *DirSCMS* algorithm and addresses the density ridge estimation problem on a directional-linear product space :math:`\mathbb{S}^q\times \mathbb{R}^D`. We assume that its input data comprise independent and identically distributed (i.i.d.) observations :math:`(\mathbf{X}_i,\mathbf{Z}_i) \in \mathbb{S}^q\times \mathbb{R}^D, i=1,...,n` sampled from a directional-linear density :math:`f_{dl}(\mathbf{x},\mathbf{z})`. The theoretical density ridge is defined similarly as:
+
+.. math::
+
+    R_d(f_{dl}) = \left\{(\mathbf{x},\mathbf{z}) \in \mathbb{S}^q \times \mathbb{R}^D: V_{dl}(\mathbf{x},\mathbf{z})^T \mathtt{grad} f_{dl}(\mathbf{x},\mathbf{z})=\mathbf{0}, \lambda_{d+1}(\mathbf{x},\mathbf{z}) < 0 \right\},
+    
+where :math:`\mathtt{grad} f_{dl}(\mathbf{x},\mathbf{z})` is the Riemannian gradient of :math:`f_{dl}` and :math:`V_{dl}(\mathbf{x},\mathbf{z})=\left[\mathbf{v}_{d+1}(\mathbf{x},\mathbf{z}),..., \mathbf{v}_q(\mathbf{x},\mathbf{z})\right] \in \mathbb{R}^{(q+1+D)\times (q+D-d)}` consists of the last :math:`(q+D-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f_{dl}(\mathbf{x},\mathbf{z})` within the tangent space of :math:`\mathbb{S}^q \times \mathbb{R}^D` at :math:`(\mathbf{x},\mathbf{z})` associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x},\mathbf{z}) \geq \cdots \geq \lambda_{q+D}(\mathbf{x},\mathbf{z})`.
+
+    
+
 
 
 References
