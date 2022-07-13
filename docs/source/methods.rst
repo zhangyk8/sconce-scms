@@ -80,13 +80,13 @@ in the design of our *DirSCMS* algorithm in pursuit of a faster convergence rate
 Directional-linear SCMS (*DirLinSCMS*) Algorithm on the 3D Light Cone :math:`\mathbb{S}^2\times \mathbb{R}`
 ------------
 
-Our *DirLinSCMS* algorithm [8]_ makes a further generalization of the above *DirSCMS* algorithm and addresses the density ridge estimation problem on a directional-linear product space :math:`\mathbb{S}^q\times \mathbb{R}^D`. We assume that its input data comprise independent and identically distributed (i.i.d.) observations :math:`(\mathbf{X}_i,\mathbf{Z}_i) \in \mathbb{S}^q\times \mathbb{R}^D, i=1,...,n` sampled from a directional-linear density :math:`f_{dl}(\mathbf{x},\mathbf{z})`. The theoretical density ridge is defined similarly as:
+Our *DirLinSCMS* algorithm [8]_ makes a further generalization of the above *DirSCMS* algorithm and addresses the density ridge estimation problem on a directional-linear product space :math:`\mathbb{S}^q\times \mathbb{R}^D`. (The implementation of the *DirLinSCMS* algorithm in our ``sconce-scms`` library *does not* restrict to the 3D light cone but accommodates this general form :math:`\mathbb{S}^q\times \mathbb{R}^D` of the directional-linear space.) We assume that its input data comprise independent and identically distributed (i.i.d.) observations :math:`(\mathbf{X}_i,\mathbf{Z}_i) \in \mathbb{S}^q\times \mathbb{R}^D, i=1,...,n` sampled from a directional-linear density :math:`f_{dl}(\mathbf{x},\mathbf{z})`. The theoretical density ridge is defined similarly as:
 
 .. math::
 
     R_d(f_{dl}) = \left\{(\mathbf{x},\mathbf{z}) \in \mathbb{S}^q \times \mathbb{R}^D: V_{dl}(\mathbf{x},\mathbf{z})^T \mathtt{grad} f_{dl}(\mathbf{x},\mathbf{z})=\mathbf{0}, \lambda_{d+1}(\mathbf{x},\mathbf{z}) < 0 \right\},
     
-where :math:`\mathtt{grad} f_{dl}(\mathbf{x},\mathbf{z})` is the Riemannian gradient of :math:`f_{dl}` and :math:`V_{dl}(\mathbf{x},\mathbf{z})=\left[\mathbf{v}_{d+1}(\mathbf{x},\mathbf{z}),..., \mathbf{v}_q(\mathbf{x},\mathbf{z})\right] \in \mathbb{R}^{(q+1+D)\times (q+D-d)}` consists of the last :math:`(q+D-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f_{dl}(\mathbf{x},\mathbf{z})` within the tangent space of :math:`\mathbb{S}^q \times \mathbb{R}^D` at :math:`(\mathbf{x},\mathbf{z})` (equivalently, the orthogonal space of :math:`(\mathbf{x},\mathbf{0})` in :math:`\mathbb{R}^{q+1+D}`) associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x},\mathbf{z}) \geq \cdots \geq \lambda_{q+D}(\mathbf{x},\mathbf{z})`. The Riemannian gradient and Hessian of :math:`f_{dl}` can also be expressed in terms of its total gradient and Hessian in the ambient Euclidean space :math:`\mathbb{R}^{q+1+D}`; see, e.g., Appendix A in [1]_.
+where :math:`\mathtt{grad} f_{dl}(\mathbf{x},\mathbf{z})` is the Riemannian gradient of :math:`f_{dl}` and :math:`V_{dl}(\mathbf{x},\mathbf{z})=\left[\mathbf{v}_{d+1}(\mathbf{x},\mathbf{z}),..., \mathbf{v}_{q+D}(\mathbf{x},\mathbf{z})\right] \in \mathbb{R}^{(q+1+D)\times (q+D-d)}` consists of the last :math:`(q+D-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f_{dl}(\mathbf{x},\mathbf{z})` within the tangent space of :math:`\mathbb{S}^q \times \mathbb{R}^D` at :math:`(\mathbf{x},\mathbf{z})` (equivalently, the orthogonal space of :math:`(\mathbf{x},\mathbf{0})` in :math:`\mathbb{R}^{q+1+D}`) associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x},\mathbf{z}) \geq \cdots \geq \lambda_{q+D}(\mathbf{x},\mathbf{z})`. The Riemannian gradient and Hessian of :math:`f_{dl}` can also be expressed in terms of its total gradient and Hessian in the ambient Euclidean space :math:`\mathbb{R}^{q+1+D}`; see, e.g., Appendix A in [1]_.
 
 Analogously, the underlying density :math:`f_{dl}` and its density ridge can be estimated by directional-linear KDE [9]_ as:
 
@@ -109,7 +109,13 @@ where :math:`L(\cdot)` and :math:`K(\cdot)` are the directional and linear kerne
 	\frac{\sum\limits_{i=1}^n \mathbf{X}_i\cdot L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right)  K\left(\norm{\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2}}_2^2 \right) }{\sum\limits_{i=1}^n L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right) K\left(\norm{\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2}}_2^2 \right)} -\mathbf{x}^{(t)}\\ \frac{\sum\limits_{i=1}^n \mathbf{Z}_i \cdot L\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right)   K'\left(\norm{\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2}}_2^2 \right) }{\sum\limits_{i=1}^n L\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right)  K'\left(\norm{\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2}}_2^2 \right)} - \mathbf{z}^{(t)}
     \end{pmatrix},
 
+.. math::
 
+    \text{ and } \quad \mathbf{x}^{(t+1)} \gets \frac{\mathbf{x}^{(t+1)}}{\left\| \mathbf{x}^{(t+1)} \right\|_2}
+    
+for :math:`t=0,1,...`, where :math:`\widehat{V}_{dl}(\mathbf{x},\mathbf{z})=\left[\widehat{\mathbf{v}}_{d+1}(\mathbf{x},\mathbf{z}),..., \widehat{\mathbf{v}}_{q+D}(\mathbf{x},\mathbf{z})\right] \in \mathbb{R}^{(q+1+D)\times (q+D-d)}` has its columns as the last :math:`(q+D-d)` eigenvectors of the estimated Riemannian Hessian :math:`\mathcal{H} \widehat{f}_{dl}(\mathbf{x},\mathbf{z})` within the tangent space of 
+
+    
 
 
 
