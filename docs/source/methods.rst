@@ -86,9 +86,30 @@ Our *DirLinSCMS* algorithm [8]_ makes a further generalization of the above *Dir
 
     R_d(f_{dl}) = \left\{(\mathbf{x},\mathbf{z}) \in \mathbb{S}^q \times \mathbb{R}^D: V_{dl}(\mathbf{x},\mathbf{z})^T \mathtt{grad} f_{dl}(\mathbf{x},\mathbf{z})=\mathbf{0}, \lambda_{d+1}(\mathbf{x},\mathbf{z}) < 0 \right\},
     
-where :math:`\mathtt{grad} f_{dl}(\mathbf{x},\mathbf{z})` is the Riemannian gradient of :math:`f_{dl}` and :math:`V_{dl}(\mathbf{x},\mathbf{z})=\left[\mathbf{v}_{d+1}(\mathbf{x},\mathbf{z}),..., \mathbf{v}_q(\mathbf{x},\mathbf{z})\right] \in \mathbb{R}^{(q+1+D)\times (q+D-d)}` consists of the last :math:`(q+D-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f_{dl}(\mathbf{x},\mathbf{z})` within the tangent space of :math:`\mathbb{S}^q \times \mathbb{R}^D` at :math:`(\mathbf{x},\mathbf{z})` associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x},\mathbf{z}) \geq \cdots \geq \lambda_{q+D}(\mathbf{x},\mathbf{z})`.
+where :math:`\mathtt{grad} f_{dl}(\mathbf{x},\mathbf{z})` is the Riemannian gradient of :math:`f_{dl}` and :math:`V_{dl}(\mathbf{x},\mathbf{z})=\left[\mathbf{v}_{d+1}(\mathbf{x},\mathbf{z}),..., \mathbf{v}_q(\mathbf{x},\mathbf{z})\right] \in \mathbb{R}^{(q+1+D)\times (q+D-d)}` consists of the last :math:`(q+D-d)` eigenvectors of the Riemannian Hessian :math:`\mathcal{H} f_{dl}(\mathbf{x},\mathbf{z})` within the tangent space of :math:`\mathbb{S}^q \times \mathbb{R}^D` at :math:`(\mathbf{x},\mathbf{z})` (equivalently, the orthogonal space of :math:`(\mathbf{x},\mathbf{0})` in :math:`\mathbb{R}^{q+1+D}`) associated with a descending order of eigenvalues :math:`\lambda_{d+1}(\mathbf{x},\mathbf{z}) \geq \cdots \geq \lambda_{q+D}(\mathbf{x},\mathbf{z})`. The Riemannian gradient and Hessian of :math:`f_{dl}` can also be expressed in terms of its total gradient and Hessian in the ambient Euclidean space :math:`\mathbb{R}^{q+1+D}`; see, e.g., Appendix A in [1]_.
 
-    
+Analogously, the underlying density :math:`f_{dl}` and its density ridge can be estimated by directional-linear KDE [9]_ as:
+
+.. math::
+
+    \widehat{f}_{dl}(\mathbf{x},\mathbf{z}) = \frac{C_L(b_1)}{nb_2^D} \sum_{i=1}^n L\left(\frac{1-\mathbf{X}_i^T\mathbf{x}}{b_1^2} \right) K\left(\left\| \frac{\mathbf{z}-\mathbf{Z}_i}{b_2} \right\|_2^2 \right),
+
+where :math:`L(\cdot)` and :math:`K(\cdot)` are the directional and linear kernel functions while :math:`b_1,b_2` are the smoothing bandwidth parameters for directional and linear components, respectively. The challenge lies in the formulation of the *DirLinSCMS* algorithm, in that a naive generalization from the mean shift algorithm to its SCMS counterpart as how the standard SCMS and *DirSCMS* methods use will lead to a biased estimate of :math:`R_d(\widehat{f}_{dl})`; see Section 4 in [8]_. Fortunately, under the applications of the von Mises (directional) kernel and Gaussian (linear) kernel, we are able to formulate the correct SCMS iterative formula under the directional-linear data scenario as:
+
+.. math::
+
+    \begin{pmatrix}
+	\mathbf{x}^{(t+1)}\\
+	\mathbf{z}^{(t+1)}
+	\end{pmatrix} \gets 
+  \begin{pmatrix}
+	\mathbf{x}^{(t)}\\
+	\mathbf{z}^{(t)}
+	\end{pmatrix}  +\eta \cdot \hat{V}_{dl}\left(\mathbf{x}^{(t)},\mathbf{z}^{(t)}\right) \hat{V}_{dl}\left(\mathbf{x}^{(t)},\mathbf{z}^{(t)}\right)^T \mathbf{H}\cdot \begin{pmatrix}
+	\frac{\sum\limits_{i=1}^n \mathbf{X}_i\cdot L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right)  K\left(\norm{\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2}}_2^2 \right) }{\sum\limits_{i=1}^n L'\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right) K\left(\norm{\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2}}_2^2 \right)} -\mathbf{x}^{(t)}\\ \frac{\sum\limits_{i=1}^n \mathbf{Z}_i \cdot L\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right)   K'\left(\norm{\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2}}_2^2 \right) }{\sum\limits_{i=1}^n L\left(\frac{1-\mathbf{X}_i^T\mathbf{x}^{(t)}}{b_1^2} \right)  K'\left(\norm{\frac{\mathbf{z}^{(t)}-\mathbf{Z}_i}{b_2}}_2^2 \right)} - \mathbf{z}^{(t)}
+    \end{pmatrix},
+
+
 
 
 
@@ -103,3 +124,4 @@ References
 .. [6] Hall, P., Watson, G.S. and Cabrera, J. (1987). Kernel density estimation with spherical data. *Biometrika*, **74**(4), 751-762.
 .. [7] García–Portugués, E. (2013). Exact risk improvement of bandwidth selectors for kernel density estimation with directional data. *Electronic Journal of Statistics*, **7**, 1655-1685.
 .. [8] Zhang, Y. and Chen, Y.-C. (2021). Mode and ridge estimation in euclidean and directional product spaces: A mean shift approach. *arXiv preprint arXiv:2110.08505*, `https://arxiv.org/abs/2110.08505 <https://arxiv.org/abs/2110.08505>`_.
+.. [9] García-Portugués, E., Crujeiras, R.M. and González-Manteiga, W. (2013). Kernel density estimation for directional–linear data. *Journal of Multivariate Analysis*, **121**, 152-175.
