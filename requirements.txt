@@ -1,0 +1,6 @@
+numpy
+scipy
+ray[default]
+sphinx>=1.4
+ipykernel
+nbsphinx
