@@ -35,13 +35,13 @@ How to Cite SCONCE-SCMS
 
 If you use ``sconce-scms`` in your research, please cite the following papers:
 
-* "Y. Zhang, R. S. de Souza, and Y.-C. Chen (2022+). SCONCE: A Cosmic Web Finder for Spherical and Conic Geometries."
+* "Y. Zhang, R. S. de Souza, and Y.-C. Chen (2022). SCONCE: A cosmic web finder for spherical and conic geometries *arXiv preprint arXiv:2207.07001*."
 * "Y.-C. Chen, S. Ho, P. E. Freeman, C. R. Genovese, and L. Wasserman (2015). Cosmic web reconstruction through density ridges: method and algorithm. *Monthly Notices of the Royal Astronomical Society*, **454**(1), 1140-1156."
 
    
 References
 ----------
-.. [1] Zhang, Y., de Souza, R. S., and Chen, Y.-C. (2022+). SCONCE: A Cosmic Web Finder for Spherical and Conic Geometries.
+.. [1] Zhang, Y., de Souza, R. S., and Chen, Y.-C. (2022). SCONCE: A cosmic web finder for spherical and conic geometries *arXiv preprint arXiv:2207.07001*
 .. [2] Ozertem, U. and Erdogmus, D. (2011). Locally defined principal curves and surfaces. *Journal of Machine Learning Research*, **12**, 1249-1286.
 .. [3] Genovese, C.R., Perone-Pacifico, M., Verdinelli, I. and Wasserman, L. (2014). Nonparametric ridge estimation. The Annals of Statistics, **42**(4), 1511-1545.
 .. [4] Chen, Y.-C., Ho, S., Freeman, P.E., Genovese, C.R. and Wasserman, L. (2015). Cosmic web reconstruction through density ridges: method and algorithm. *Monthly Notices of the Royal Astronomical Society*, **454**(1), 1140-1156.
