@@ -339,6 +339,66 @@ def vMFMixtureSamp(n, mu=np.array([[0,0,1]]), kappa=[1.0], prob=[1.0]):
     return data_ps
 
 
+def vMFGaussMixture(n, q=2, D=2, mu_vMF=np.array([[0,0,1]]), kappa=[1.0], 
+                    mu_N=np.array([[1,1]]), cov=np.diag([1,1]).reshape(2,2,1), 
+                    prob=[1.0]):
+    '''
+    Randomly sampling data points from a mixture of q-dimensional von-Mises Fisher 
+    and D-dimensional Gaussian distributions (directional-linear mixture model).
+    
+    Parameters
+    -----------
+        n: int
+            The number of sampling random data points.
+            
+        q: int
+            Intrinsic data dimension of directional components.
+            
+        D: int
+            Data dimension of linear components.
+    
+        mu_vMF: a (m,q+1)-array
+            Euclidean coordinates of the m mean directions for the mixture of 
+            von-Mises Fisher densities.
+       
+        kappa: list of floats
+            The m concentration parameters for the mixture of von-Mises Fisher 
+            densities.
+            
+        mu_N: (m,D)-array
+            The means of the Gaussian mixture model with m components. 
+       
+        cov: (D,D,m)-array
+            The (D,D)-covariance matrices of the Gaussian mixture model with 
+            m components.
+       
+        prob: list of floats
+            The m mixture probabilities.
+            
+    Return
+    -------
+        data_ps: (n, q+1+D)-array
+            Euclidean coordinates of the randomly sampled points from the 
+            vMF-Gaussian mixtures.
+    '''
+    m = len(prob)   ## The number of mixtures
+    
+    assert (len(kappa) == len(prob)), "The parameters 'kappa' and 'prob' "\
+    "should be of the same length."
+    assert (cov.shape[2] == len(prob)), "'cov.shape[2]' and 'len(prob)' "\
+    "should be equal."
+    
+    inds = np.random.choice(list(range(m)), n, replace=True, 
+                            p=np.array(prob)/sum(prob))
+    data_ps = np.zeros((n,q+1+D))
+    for i in range(m):
+        data_ps[inds == i,:(q+1)] = vMFSamp(sum(inds == i), mu=mu_vMF[i,:], 
+                                             kappa=kappa[i])
+        data_ps[inds == i,(q+1):(q+1+D)] \
+            = np.random.multivariate_normal(mu_N[i,:], cov[:,:,i], size=sum(inds == i))
+    return data_ps
+
+
 def SmoothBootstrap_vMF(data, B=1000, h=None):
     '''
     Resampling a dataset using the smoothed bootstrap with the von Mises kernel.
