@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Author: Yikun Zhang
@@ -76,8 +75,9 @@ def CirSphSampling(N, lat_c=60, lon_range=[-180,180], sigma=0.01,
         N: int
             The number of randomly generated data points.
             
-        lat_c: float (range: 0-90)
-            The latitude of the circle with respect to the pivotal axis.
+        lat_c: float
+            The latitude of the circle with respect to the pivotal axis. 
+            (range: 0-90)
             
         lon_range: 2-element list
             The longitude range that the circular structure covers. When 
@@ -148,7 +148,7 @@ def GaussMixture(N, mu=np.array([[1,1]]), cov=np.diag([1,1]).reshape(2,2,1),
     "should be equal."
     inds = np.random.choice(list(range(m)), N, replace=True, 
                             p=np.array(prob)/sum(prob))
-    data_ps = np.zeros(N,d))
+    data_ps = np.zeros(N,d)
     for i in range(m):
         data_ps[inds == i,:] = np.random.multivariate_normal(mu[i,:], cov[:,:,i], 
                                                              size=sum(inds == i))
@@ -196,7 +196,7 @@ def vMFDensity(x, mu=np.array([[0,0,1]]), kappa=[1.0], prob=[1.0]):
 def vMFSamp(n, mu=np.array([0,0,1]), kappa=1):
     '''
     Randomly sampling data points from a q-dimensional von-Mises Fisher (vMF) 
-    density.
+    density with analytic approaches.
     
     Parameters
     ---------
@@ -254,10 +254,11 @@ def vMFSamp(n, mu=np.array([0,0,1]), kappa=1):
     data_ps = np.dot(R, data_ps.T).T
     return data_ps
 
+
 def vMFRejectSamp(n, mu=np.array([0,0,1]), kappa=1):
     '''
     Randomly sampling data points from a q-dimensional von-Mises Fisher (vMF) 
-    density.
+    density via rejection sampling.
     
     Parameters
     ---------
@@ -337,3 +338,50 @@ def vMFMixtureSamp(n, mu=np.array([[0,0,1]]), kappa=[1.0], prob=[1.0]):
     for i in range(m):
         data_ps[inds == i,:] = vMF_samp(sum(inds == i), mu=mu[i,:], kappa=kappa[i])
     return data_ps
+
+
+def SmoothBootstrap_vMF(data, B=1000, h=None):
+    '''
+    Resampling a dataset using the smoothed bootstrap with the von Mises kernel.
+    
+    Parameters
+    ---------
+        data: (n,d)-array
+            The Euclidean coordinates of n directional data points in 
+            the d-dimensional Euclidean space, where d=q+1.
+            
+        B: int
+            The number of bootstrapping times.
+            
+        h: float
+           The bandwidth parameter. (Default: h=None. Then a rule of thumb for 
+           directional KDEs with the von Mises kernel in Garcia-Portugues (2013)
+           is applied.)
+            
+    Return
+    --------
+        data_Boot: (n,d)-array
+            The Euclidean coordinates of the smoothed bootstrap dataset.
+    '''
+    n = data.shape[0]  ## Number of data points
+    d = data.shape[1]  ## Euclidean Dimension of the data
+
+    ## Rule of thumb for directional KDE
+    if h is None:
+        R_bar = np.sqrt(sum(np.mean(data, axis=0) ** 2))
+        ## An approximation to kappa (Banerjee 2005 & Sra, 2011)
+        kap_hat = R_bar * (D - R_bar ** 2) / (1 - R_bar ** 2)
+        if D == 3:
+            h = (8*np.sinh(kap_hat)**2/(n*kap_hat * \
+                 ((1+4*kap_hat**2)*np.sinh(2*kap_hat) - 2*kap_hat*np.cosh(2*kap_hat))))**(1/6)
+        else:
+            h = ((4 * np.sqrt(np.pi) * sp.iv(D / 2 - 1, kap_hat)**2) / \
+                 (n * kap_hat ** (D / 2) * (2 * (D - 1) * sp.iv(D/2, 2*kap_hat) + \
+                                  (D+1) * kap_hat * sp.iv(D/2+1, 2*kap_hat)))) ** (1/(D + 3))
+        print("The current bandwidth is " + str(h) + ".\n")
+        
+    data_Boot = np.zeros((B, d))
+    for i in range(B):
+        ind = np.random.choice(n, size=1, replace=True)
+        data_Boot[i,:] = vMFSamp(1, mu=data[ind[0],:], kappa=1/(h**2))
+    return data_Boot
