@@ -26,6 +26,7 @@ More details can be found in :doc:`Methodology <methods>` and the reference pape
    
    installation
    methods
+   Example_MeanShift
    Example_SCMS
    api_reference
    
