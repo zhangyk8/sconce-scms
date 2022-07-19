@@ -21,6 +21,14 @@ Directional-linear KDE, mean shift, and SCMS algorithms on the directional-linea
 .. automodule:: sconce.DirLinSCMS
     :members:
     :show-inheritance:
+    
+    
+Knot detection on a set of filamentary points
+----------------------------------
+
+.. automodule:: sconce.FilaAttr
+    :members:
+    :show-inheritance:
 
 Utilities for SCONCE-SCMS
 --------------------------
