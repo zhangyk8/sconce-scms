@@ -217,7 +217,7 @@ def DirMS(y_0, data, h=None, eps=1e-7, max_iter=1000, wt=None, diff_method='all'
     if wt is None:
         wt = np.ones((n,))
     for t in range(1, max_iter):
-        y_can = np.dot(np.exp((np.dot(MS_old, data.T)-1)/(h**2)), data * wt.reshape(n,1))
+        y_can = np.dot(np.exp((np.dot(MS_path[:,:,t-1], data.T)-1)/(h**2)), data * wt.reshape(n,1))
         y_dist = np.sqrt(np.sum(y_can ** 2, axis=1))
         MS_path[y_dist != 0,:,t] = (y_can / y_dist.reshape(len(y_dist), 1))[y_dist != 0]
         MS_path[y_dist == 0,:,t] = MS_path[y_dist == 0,:,t-1]
