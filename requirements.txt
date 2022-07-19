@@ -1,7 +1,7 @@
 numpy
 scipy
 ray[default]
-sklearn
+scikit-learn
 sphinx>=1.4
 ipykernel
 nbsphinx
