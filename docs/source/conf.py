@@ -45,7 +45,7 @@ extensions = [
 # intersphinx_disabled_domains = ['std']
 
 napoleon_use_ivar = True
-autodoc_mock_imports = ['numpy', 'scipy', 'ray']
+autodoc_mock_imports = ['numpy', 'scipy', 'ray', 'scikit-learn']
 templates_path = ['_templates']
 
 # List of patterns, relative to source directory, that match files and
