@@ -7,7 +7,6 @@
 # in practice.
 
 import numpy as np
-from sklearn.cluster import AgglomerativeClustering
 from numpy import linalg as LA
 
 #================================================================================#
