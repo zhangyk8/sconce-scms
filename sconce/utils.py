@@ -147,7 +147,7 @@ def GaussMixture(N, mu=np.array([[1,1]]), cov=np.diag([1,1]).reshape(2,2,1),
     "should be equal."
     inds = np.random.choice(list(range(m)), N, replace=True, 
                             p=np.array(prob)/sum(prob))
-    data_ps = np.zeros(N,d)
+    data_ps = np.zeros((N,d))
     for i in range(m):
         data_ps[inds == i,:] = np.random.multivariate_normal(mu[i,:], cov[:,:,i], 
                                                              size=sum(inds == i))
@@ -335,7 +335,7 @@ def vMFMixtureSamp(n, mu=np.array([[0,0,1]]), kappa=[1.0], prob=[1.0]):
     inds = np.random.choice(list(range(m)), n, replace=True, p=np.array(prob)/sum(prob))
     data_ps = np.zeros((n,d))
     for i in range(m):
-        data_ps[inds == i,:] = vMF_samp(sum(inds == i), mu=mu[i,:], kappa=kappa[i])
+        data_ps[inds == i,:] = vMFSamp(sum(inds == i), mu=mu[i,:], kappa=kappa[i])
     return data_ps
 
 
