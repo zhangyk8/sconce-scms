@@ -33,7 +33,7 @@ def DetectKnot(x, r_in, r_out, fila_map):
     -------
         'Knot'/'Non-Knot': str
             The indicator of whether the point of interest is a knot/intersection
-            on the filament.
+            on the input filament.
 
     '''
     dist = LA.norm(fila_map - x.values, axis=1)
