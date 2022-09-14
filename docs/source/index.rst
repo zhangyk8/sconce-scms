@@ -1,6 +1,9 @@
 Sperical and Conic Cosmic Web Finder in Python
 ===================================
 
+.. image:: SCONCE_Sconce_Logo.png
+   :width: 500
+
 **SCONCE-SCMS** (**S**\pherical and **CON**\ic **C**\osmic w\ **E**\b finder with the extended **SCMS** algorithms [1]_) is a Python library for detecting the cosmic web structures (primarily cosmic filaments and the associated cosmic nodes) from a collection of discrete observations with the extended subspace constrained mean shift (SCMS) algorithms on the 2D (RA,DEC) celestial sphere :math:`\mathbb{S}^2` or the 3D (RA,DEC,redshift) light cone :math:`\mathbb{S}^2\times\mathbb{R}`. 
 
 (Notes: RA -- Right Ascension, i.e., the celestial longitude; DEC -- Declination, i.e., the celestial latitude.)
